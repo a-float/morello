@@ -20,14 +20,17 @@ const TinyChip = styled(Chip)(`
     padding: 0 0.5;
     font-size: 0.7em;
 `);
-
-export interface TaskProps {
-    id?: string,
+export interface TaskData {
+    id: string,
+    columnName?: string,
     name: string,
     tags: string[] | [],
-    duaDate?: Date,
-    descr?: string
+    dueDate?: Date,
+    descr?: string,
 }
+export type TaskProps = {
+    deleteTask: (id: string) => void
+} & TaskData
 
 export const Task: FunctionComponent<TaskProps> = (props) => {
     const [state, setState] = useState({ name: "Task name", descr: "Default task description", editable: false }) // TODO move these up?
@@ -43,6 +46,7 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
     return (
         <Card elevation={6} sx={{ minWidth: 275 }}
             onDoubleClick={onStartEdit}>
+                {props.id}
             <CardContentEvenPadding>
                 <Stack position="absolute" right="10px" direction="row" alignItems="center" justifyContent="flex-end">
                     <MyIcon color={grey[500]} hoverColor={grey[900]} onClick={onStartEdit}>
@@ -52,7 +56,7 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         <Minimize fontSize="small" />
                     </MyIcon>
                     <MyIcon color={grey[500]} hoverColor={grey[900]}>
-                        <Close fontSize="small" />
+                        <Close fontSize="small" onClick={() => props.deleteTask(props.id)}/>
                     </MyIcon>
                 </Stack>
                 {!state.editable ?
