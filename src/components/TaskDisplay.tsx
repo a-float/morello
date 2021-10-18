@@ -1,6 +1,6 @@
 import React from 'react'
 import { TaskColumn } from './TaskColumn'
-import { Stack, Container } from '@mui/material'
+import { Container, Box } from '@mui/material'
 import { TaskData } from './Task'
 import { data, defaultTask } from "../database"
 import { TaskEditor } from './TaskEditor'
@@ -8,9 +8,15 @@ import { TaskEditor } from './TaskEditor'
 export interface TaskDisplayProps {
 }
 
+/*
+    need to keep editedTaskData and isEditorOpen separately. If the editor dialog window 
+    closes while the chips are dissappearing
+    the closing animation gets laggy
+*/
 interface TaskDisplayState {
     tasks: TaskData[]
-    idToEdit: string | null
+    editedTaskData: TaskData | null,
+    isEditorOpen: boolean
 }
 
 export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplayState>{
@@ -18,7 +24,8 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
         super(props)
         this.state = {
             tasks: data,
-            idToEdit: null
+            editedTaskData: null,
+            isEditorOpen: false
         }
         this.addNewTask = this.addNewTask.bind(this)
         this.deleteTask = this.deleteTask.bind(this)
@@ -28,8 +35,13 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
     }
     addNewTask(columnName: string) {
         const id = Math.floor(Math.random() * 100000).toString()
-        this.setState({ tasks: [...this.state.tasks, { ...defaultTask, columnName, id }] })
-        console.log(id)
+        const newTaskData = { ...defaultTask, columnName, id }
+        this.setState(prevState => ({
+            ...prevState,
+            tasks: [...this.state.tasks, newTaskData],
+        }))
+        console.log("A task with id " + id + " has been created.")
+        this.openEditor(newTaskData)
     }
     deleteTask(id: string) {
         this.setState({ tasks: this.state.tasks.filter(task => task.id !== id) })
@@ -39,7 +51,11 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
         return task ? task : null
     }
     onStartTaskEdit(id: string) {
-        this.setState(prevState => ({ ...prevState, idToEdit: id }))
+        const taskData = this.getTaskById(id)
+        if (taskData !== null) this.openEditor(taskData)
+    }
+    private openEditor(data: TaskData) {
+        this.setState(prevState => ({ ...prevState, editedTaskData: data, isEditorOpen: true }))
     }
     private updateTask(data: TaskData) {
         const taskIdx = this.state.tasks.findIndex(task => task.id === data.id)
@@ -56,7 +72,7 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
     }
     onEndTaskEdit(data: TaskData | null) {
         if (data) this.updateTask(data)
-        this.setState(prevState => ({ ...prevState, idToEdit: null }))
+        this.setState(prevState => ({ ...prevState, isEditorOpen: false }))
     }
 
     render() {
@@ -71,12 +87,13 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
             />)
         return (
             <Container>
-                <Stack direction="row" spacing={3} sx={{ justifyContent: "center" }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                     {columns}
-                </Stack>
+                </Box>
                 <TaskEditor
-                    taskData={this.state.idToEdit ? this.getTaskById(this.state.idToEdit) : null}
-                    onEndEdit={this.onEndTaskEdit} />
+                isOpen={this.state.isEditorOpen}
+                taskData={this.state.editedTaskData}
+                onEndEdit={this.onEndTaskEdit} />
             </Container>
         )
     }

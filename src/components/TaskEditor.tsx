@@ -1,21 +1,26 @@
-import React, { FormEvent, FunctionComponent } from 'react'
+import { FormEvent, FunctionComponent } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { TaskData } from './Task'
+import { MultipleTagSelect } from './MultipleTagSelect'
 
 interface TaskEditorProps {
+    isOpen: boolean,
     taskData: TaskData | null, // data of the currently modified task
     onEndEdit: (taskData: TaskData | null) => void // called when the edit form is submitted
 }
 
 export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
-
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget)
-        const newTaskData : TaskData = {
+        const tagInputValue = (e.currentTarget?.querySelector('#tag-input') as HTMLInputElement).value
+        const tags = tagInputValue === '' ? [] : tagInputValue.split(',')
+        tags.sort()
+        const newTaskData: TaskData = {
             ...props.taskData!!,
             name: formData.get("name") as string,
-            descr: formData.get("descr") as string
+            descr: formData.get("descr") as string,
+            tags
         }
         console.log(newTaskData)
         props.onEndEdit(newTaskData);
@@ -24,9 +29,10 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
     return (
         <div>
             <Dialog
-                open={props.taskData !== null}
+                open={props.isOpen}
                 onBackdropClick={() => { props.onEndEdit(null) }}
-                onClose={() => {props.onEndEdit(null)}}
+                onClose={() => { props.onEndEdit(null) }}
+                fullWidth
             >
                 <form onSubmit={onSubmit}>
                     <DialogTitle>Edit the task</DialogTitle>
@@ -42,6 +48,7 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
                             variant="outlined"
                             required
                         />
+                        <MultipleTagSelect tags={props.taskData?.tags || []} />
                         <TextField
                             defaultValue={props.taskData?.descr}
                             multiline

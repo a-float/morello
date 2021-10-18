@@ -19,8 +19,8 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
             onDeleteTask={props.onDeleteTask} />
     )
     return (
-        <Stack sx={{ width: "30%" }} spacing={1}>
-            <Typography sx={{ fontSize: 28 }} color="text.primary" gutterBottom>
+        <Stack sx={{ minWidth: '300px', width: "30%" }} spacing={1}>
+            <Typography sx={{ textAlign: 'center', marginBottom: '0', fontSize: 28 }} color="text.primary" gutterBottom>
                 {props.name}
             </Typography>
             {tasks}
