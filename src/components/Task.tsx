@@ -14,9 +14,15 @@ const CardContentEvenPadding = styled(CardContent)(`
     }
 `);
 
+const textWrapStyle : any = {
+    overflowWrap: "break-word",
+    wordWrap: "break-word",
+    hyphens: "auto"
+}
+
 export interface TaskData {
     id: string,
-    columnName?: string,
+    columnId: number,
     name: string,
     tags: string[] | [],
     dueDate?: Date,
@@ -37,7 +43,7 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
         }))
     }
     return (
-        <Card elevation={6} sx={{ minWidth: 275, position:"relative" }}
+        <Card elevation={6} sx={{ position: "relative" }}
             onMouseEnter={() => { setState(prevState => ({ ...prevState, showBar: true })) }}
             onMouseLeave={() => { setState(prevState => ({ ...prevState, showBar: false })) }}>
             {/* {props.id} */}
@@ -57,12 +63,12 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                 </Stack>
             }
             <CardContentEvenPadding onDoubleClick={startEdit}>
-                <Typography variant="h5" component="div">
+                <Typography sx={{ ...textWrapStyle }} variant="h5" component="div">
                     {props.name}
                 </Typography>
-                <TagRow tags={props.tags}/>
+                <TagRow tags={props.tags} />
                 {state.showDescr &&
-                    <Typography sx={{ whiteSpace: "pre-wrap" }} variant='body1' component="div">
+                    <Typography sx={{ ...textWrapStyle,  whiteSpace: "pre-wrap" }} variant='body1' component="div">
                         {props.descr}
                     </Typography>
                 }
