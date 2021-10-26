@@ -10,7 +10,7 @@ export interface TaskColumnData {
     tasks: TaskData[]
 }
 export type TaskColumnProps = {
-    addNewTask: (columnName: string) => void,
+    onAddNewTask: (columnName: string) => void,
     onStartTaskEdit: (id: string) => void,
     onDeleteTask: (id: string, columnName: string) => void,
     onNameChange: (oldName: string, newName: string) => void,
@@ -18,7 +18,7 @@ export type TaskColumnProps = {
 } & TaskColumnData
 
 export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
-    // TODO remove name state?
+    // TODO make column name edition similar to EditableListItem one!
     const [state, setState] = useState({ editable: false, name: props.name, showBar: false })
     const tasks = props.tasks.map(taskData =>
         <Task
@@ -52,12 +52,12 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                     :
                     <form onSubmit={(event) => {
                         event.preventDefault()
+                        setState(prevState => ({...prevState, editable: false}))
                         props.onNameChange(props.name, state.name)
                     }}>
                         <Stack direction='row' sx={{justifyContent: "space-between", alignItems:"flex-end"}}>
                             <TextField
                                 autoFocus
-                                id='column-name-input'
                                 label="Column Name"
                                 value={state.name}
                                 variant='standard'
@@ -71,11 +71,8 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                     </form>}
 
             </Box>
-            {/* <Typography sx={{ textAlign: 'center', marginBottom: '0', fontSize: 28 }} color="text.primary" gutterBottom>
-                {props.name}
-            </Typography> */}
             {tasks}
-            <Button variant="contained" color="primary" onClick={() => props.addNewTask(props.name)}>
+            <Button variant="contained" color="primary" onClick={() => props.onAddNewTask(props.name)}>
                 Add
             </Button>
         </Stack>

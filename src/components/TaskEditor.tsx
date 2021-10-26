@@ -1,4 +1,4 @@
-import { FormEvent, FunctionComponent } from 'react'
+import { FormEvent, FunctionComponent, FocusEvent} from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { TaskData } from './Task'
 import { MultipleTagSelect } from './MultipleTagSelect'
@@ -26,6 +26,8 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
         props.onEndEdit(newTaskData);
     }
 
+    const handleFocus = (event: FocusEvent<any>) => {event.target.select() }
+
     return (
         <div>
             <Dialog
@@ -40,6 +42,7 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
                         <TextField
                             defaultValue={props.taskData?.name}
                             autoFocus
+                            onFocus={handleFocus}
                             margin="dense"
                             id="name" name="name"
                             label="Title"

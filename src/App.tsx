@@ -1,10 +1,10 @@
 import './App.css';
-import { TaskDisplay } from './components/TaskDisplay'
+import { SheetManager } from './components/SheetManager'
 
 function App() {
   return (
     <div className="App">
-      <TaskDisplay/>
+      <SheetManager/>
     </div>
   );
 }

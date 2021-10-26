@@ -6,6 +6,10 @@ export const defaultTask =
     descr: "",
     tags: []
 }
-
 export const columns: string[] = ["Done", "In Progress", "To Do"]
 export const tasks: TaskData[] = []
+
+export interface SheetData {
+    columns: string[],
+    tasks: TaskData[]
+}

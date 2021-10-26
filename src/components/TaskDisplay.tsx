@@ -2,10 +2,13 @@ import React from 'react'
 import { TaskColumn } from './TaskColumn'
 import { Container, Button, Grid } from '@mui/material'
 import { TaskData } from './Task'
-import { defaultTask, columns, tasks } from "../database"
+import { defaultTask, SheetData } from "../database"
 import { TaskEditor } from './TaskEditor'
 
 export interface TaskDisplayProps {
+    columns: string[],
+    tasks: TaskData[],
+    onChangeSheet: (data: SheetData) => void
 }
 /*
     need to keep editedTaskData and isEditorOpen separately. If the editor dialog window 
@@ -13,122 +16,111 @@ export interface TaskDisplayProps {
     the closing animation gets laggy
 */
 interface TaskDisplayState {
-    columns: string[],
-    tasks: TaskData[],
     editedTaskData: TaskData | null,
     isEditorOpen: boolean
 }
 
 export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplayState>{
-    constructor(props: TaskDisplayProps) {
-        super(props)
-        this.state = {
-            tasks,
-            columns,
-            editedTaskData: null,
-            isEditorOpen: false
-        }
-        this.addNewTask = this.addNewTask.bind(this)
-        this.deleteTask = this.deleteTask.bind(this)
-        this.onStartTaskEdit = this.onStartTaskEdit.bind(this)
-        this.onEndTaskEdit = this.onEndTaskEdit.bind(this)
-        this.addNewColumn = this.addNewColumn.bind(this)
-        this.changeColumnName = this.changeColumnName.bind(this)
-        this.onDeleteColumn = this.onDeleteColumn.bind(this)
-    }
-    addNewTask(columnName: string) {
-        const id = Math.floor(Math.random() * 100000).toString()
-        const newTask = { ...defaultTask, columnId: this.state.columns.indexOf(columnName), id }
-        this.setState(prevState => ({
-            tasks: [...prevState.tasks, newTask]
-        }))
-        console.log("A task with id " + id + " has been created.")
-        this.openEditor(newTask)
+    state: TaskDisplayState = {
+        editedTaskData: null,
+        isEditorOpen: false
     }
 
-    deleteTask(id: string) {
-        this.setState(prevState => ({
-            tasks: [...prevState.tasks.filter(task => task.id !== id)]
-        }))
+    addNewTask = (columnName: string) => {
+        const id = Math.floor(Math.random() * 100000).toString()
+        const newTask = { ...defaultTask, columnId: this.props.columns.indexOf(columnName), id }
+        this.openEditor(newTask)
+        console.log("A task with id " + id + " has been created.")
     }
-    private getTaskById(id: string) {
-        const task = this.state.tasks.find(task => task.id === id)
+
+    deleteTask = (id: string) => {
+        const newTasks = [...this.props.tasks.filter(task => task.id !== id)]
+        this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
+    }
+
+    private getTaskById = (id: string) => {
+        const task = this.props.tasks.find(task => task.id === id)
         return task ? task : null
     }
-    onStartTaskEdit(id: string) {
+
+    startTaskEdit = (id: string) => {
         const taskData = this.getTaskById(id)
         if (taskData !== null) this.openEditor(taskData)
     }
-    private openEditor(data: TaskData) {
+
+    private openEditor = (data: TaskData) => {
         this.setState(prevState => ({ ...prevState, editedTaskData: data, isEditorOpen: true }))
     }
-    private updateTask(updatedTask: TaskData) {
-        const taskIdx = this.state.tasks.findIndex(task => task.id === updatedTask.id)
-        this.setState(prevState => ({
-            tasks: [
-                ...prevState.tasks.splice(0, taskIdx),
-                { ...updatedTask },
-                ...prevState.tasks.splice(taskIdx + 1)
-            ]
-        }));
+
+    private updateTask = (updatedTask: TaskData) => {
+        let taskIdx = this.props.tasks.findIndex(task => task.id === updatedTask.id)
+        if (taskIdx === -1) taskIdx = this.props.tasks.length;
+        const newTasks = [
+            ...this.props.tasks.slice(0, taskIdx),
+            { ...updatedTask },
+            ...this.props.tasks.slice(taskIdx + 1)
+        ]
+        this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
     }
-    onEndTaskEdit(data: TaskData | null) {
+
+    onEndTaskEdit = (data: TaskData | null) => {
         if (data) this.updateTask(data)
         this.setState(prevState => ({ ...prevState, isEditorOpen: false }))
     }
-    addNewColumn() {
-        // find new available column name
-        let columnCount = Object.keys(this.state.columns).length + 1
-        let newName = (x: number) => "Column #" + x
-        while (this.state.columns.includes(newName(columnCount))) {
+
+    addNewColumn = () => {
+        let columnCount = this.props.columns.length + 1
+        let newName = (x: number) => "Column " + x
+        while (this.props.columns.includes(newName(columnCount))) {
             columnCount += 1
         }
-        this.setState(prevState => ({
-            columns: [...prevState.columns, newName(columnCount)]
-        }))
+        const newColumns = [...this.props.columns, newName(columnCount)]
+        this.props.onChangeSheet({ tasks: [...this.props.tasks], columns: newColumns })
     }
-    changeColumnName(oldName: string, newName: string) {
-        if (this.state.columns.includes(newName)) {
+
+    changeColumnName = (oldName: string, newName: string) => {
+        if (this.props.columns.includes(newName)) {
             console.log(`'${newName}' is already taken`)
             return
         }
-        const colIdx = this.state.columns.indexOf(oldName)
+        const colIdx = this.props.columns.indexOf(oldName)
         if (colIdx === -1) {
-            console.log(`Invalid oldName = '${oldName}'`)
+            console.log(`Internal Error: Invalid oldName: '${oldName}'`)
             return
         }
-        this.setState(prevState => ({
-            columns: [
-                ...prevState.columns.splice(0, colIdx),
-                newName,
-                ...prevState.columns.splice(colIdx+1)
-            ]
-        }))
+        const newColumns = [
+            ...this.props.columns.slice(0, colIdx),
+            newName,
+            ...this.props.columns.slice(colIdx + 1)
+        ]
+        this.props.onChangeSheet({ tasks: [...this.props.tasks], columns: newColumns })
     }
-    onDeleteColumn(columnName: string){
-        const colIdx = this.state.columns.indexOf(columnName)
-        if(colIdx === -1){
+
+    deleteColumn = (columnName: string) => {
+        const colIdx = this.props.columns.indexOf(columnName)
+        if (colIdx === -1) {
             console.error('No column with name: ' + columnName)
             return
         } else {
-            this.setState(prevState => ({
-                columns: prevState.columns.filter((col, i) => i !== colIdx),
-                tasks: prevState.tasks.filter(task => task.columnId !== colIdx)
-            }))
+            const newDataSheet = {
+                columns: this.props.columns.filter((col, i) => i !== colIdx),
+                tasks: this.props.tasks.filter(task => task.columnId !== colIdx)
+            }
+            this.props.onChangeSheet(newDataSheet)
         }
     }
 
     render() {
-        const gridColumns = [...Array(this.state.columns.length).keys()].map(colIdx =>
-            <Grid key={this.state.columns[colIdx]} item xs={12} sm={6} md={4} lg={3}>
+        const gridColumns = [...Array(this.props.columns.length).keys()].map(colIdx =>
+            <Grid key={this.props.columns[colIdx]} item xs={12} sm={6} md={4} lg={3}>
                 <TaskColumn
-                    addNewTask={this.addNewTask}
+                    onAddNewTask={this.addNewTask}
                     onDeleteTask={this.deleteTask}
-                    onStartTaskEdit={this.onStartTaskEdit}
+                    onStartTaskEdit={this.startTaskEdit}
                     onNameChange={this.changeColumnName}
-                    onDeleteColumn={this.onDeleteColumn}
-                    name={this.state.columns[colIdx]}
-                    tasks={this.state.tasks.filter(task => task.columnId === colIdx)}
+                    onDeleteColumn={this.deleteColumn}
+                    name={this.props.columns[colIdx]}
+                    tasks={this.props.tasks.filter(task => task.columnId === colIdx)}
                 />
             </Grid>)
         return (
@@ -136,10 +128,11 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
                 <Grid container spacing={{ xs: 1, md: 2, xl: 2 }}>
                     {gridColumns}
                     <Grid
-                        sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
-                        item xs={12} sm={6} md={4} lg={3}>
+                        item
+                        sx={{display: "flex", justifyContent: "center", alignItems: "flex-start" }}
+                        xs={12} sm={6} md={4} lg={3}>
                         <Button sx={{ marginTop: "2em" }} size='small' variant='outlined' onClick={this.addNewColumn}>
-                            Add new
+                            Add new column
                         </Button>
                     </Grid>
                 </Grid>
