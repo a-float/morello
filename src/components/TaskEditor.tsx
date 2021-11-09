@@ -22,7 +22,6 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
             descr: formData.get("descr") as string,
             tags
         }
-        console.log(newTaskData)
         props.onEndEdit(newTaskData);
     }
 

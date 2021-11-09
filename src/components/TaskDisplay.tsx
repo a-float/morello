@@ -4,6 +4,7 @@ import { Container, Button, Grid } from '@mui/material'
 import { TaskData } from './Task'
 import { defaultTask, SheetData } from "../database"
 import { TaskEditor } from './TaskEditor'
+import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 
 export interface TaskDisplayProps {
     columns: string[],
@@ -30,7 +31,7 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
         const id = Math.floor(Math.random() * 100000).toString()
         const newTask = { ...defaultTask, columnId: this.props.columns.indexOf(columnName), id }
         this.openEditor(newTask)
-        console.log("A task with id " + id + " has been created.")
+        // console.log("A task with id " + id + " has been created.")
     }
 
     deleteTask = (id: string) => {
@@ -66,6 +67,92 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
     onEndTaskEdit = (data: TaskData | null) => {
         if (data) this.updateTask(data)
         this.setState(prevState => ({ ...prevState, isEditorOpen: false }))
+    }
+
+    onDragEnd = ({ source, destination }: DropResult) => {
+        // Make sure we have a valid destination
+        if (destination === undefined || destination === null) return null
+
+        // If the source and destination columns are the same
+        // AND if the index is the same, the item isn't moving
+        if (
+            source.droppableId === destination.droppableId &&
+            destination.index === source.index
+        )
+            return null
+
+        // Set start and end variables
+        const startColName = source.droppableId.split('-').slice(1).join('')
+        const endColName = destination.droppableId.split('-').slice(1).join('')
+        const start = this.props.columns.findIndex(col => col === startColName)
+        const end = this.props.columns.findIndex(col => col === endColName)
+
+        // If start is the same as end, we're in the same column
+        if (start === end) {
+            const newTasks = []
+            let foundCount = 0
+            let taskToMove: TaskData = this.props.tasks[0] // temporary value
+            for (let task of this.props.tasks) {
+                if (task.columnId === start) {
+                    if (foundCount === source.index) {
+                        taskToMove = task
+                        break
+                    }
+                    foundCount += 1
+                }
+            }
+            foundCount = 0
+            for (let task of this.props.tasks) {
+                if (task.columnId === start) {
+                    if (foundCount === destination.index) {
+                        newTasks.push(taskToMove)
+                    }
+                    if (task.id !== taskToMove.id) {
+                        newTasks.push(task)
+                        foundCount += 1
+                    }
+                } else {
+                    newTasks.push(task)
+                }
+            }
+            if (foundCount <= destination.index) newTasks.push(taskToMove)
+
+            this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
+            return null
+        }
+        else { // different columns
+            const newTasks = []
+            let foundCount = 0
+            let taskToMove: TaskData = this.props.tasks[0] // temporary value
+            for (let task of this.props.tasks) {
+                if (task.columnId === start) {
+                    if (foundCount === source.index) {
+                        taskToMove = task
+                        break
+                    }
+                    foundCount += 1
+                }
+            }
+            taskToMove.columnId = end
+            foundCount = 0
+            for (let task of this.props.tasks) {
+                if (task.id === taskToMove.id) continue
+                if (task.columnId === end) {
+                    if (foundCount === destination.index) {
+                        newTasks.push(taskToMove)
+                    }
+                    if (task.id !== taskToMove.id) {
+                        newTasks.push(task)
+                        foundCount += 1
+                    }
+                } else {
+                    newTasks.push(task)
+                }
+            }
+            if (foundCount <= destination.index) newTasks.push(taskToMove)
+            this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
+        }
+        return null
     }
 
     addNewColumn = () => {
@@ -125,17 +212,19 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
             </Grid>)
         return (
             <Container>
-                <Grid container spacing={{ xs: 1, md: 2, xl: 2 }}>
-                    {gridColumns}
-                    <Grid
-                        item
-                        sx={{display: "flex", justifyContent: "center", alignItems: "flex-start" }}
-                        xs={12} sm={6} md={4} lg={3}>
-                        <Button sx={{ marginTop: "2em" }} size='small' variant='outlined' onClick={this.addNewColumn}>
-                            Add new column
-                        </Button>
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <Grid container spacing={{ xs: 1, md: 2, xl: 2 }}>
+                        {gridColumns}
+                        <Grid
+                            item
+                            sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
+                            xs={12} sm={6} md={4} lg={3}>
+                            <Button sx={{ marginTop: "2em" }} size='small' variant='outlined' onClick={this.addNewColumn}>
+                                Add new column
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </DragDropContext>
                 <TaskEditor
                     isOpen={this.state.isEditorOpen}
                     taskData={this.state.editedTaskData}

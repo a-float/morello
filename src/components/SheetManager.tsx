@@ -9,6 +9,8 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import ListSubheader from '@mui/material/ListSubheader'
 import { EditableListItem } from './EditableListItem'
+const MAX_SHEET_COUNT = 30
+const LOCAL_STORAGE_KEY = "MyToDO"
 
 interface SheetManagerProps {
 
@@ -23,6 +25,19 @@ export class SheetManager extends React.Component<SheetManagerProps, SheetManage
     state: SheetManagerState = {
         sheets: { 'Basic sheet': { columns, tasks } }, // TODO change the initialization
         currentSheet: 'Basic sheet'
+    }
+
+    componentDidMount() {
+        const storage = window.localStorage
+        const data = storage.getItem(LOCAL_STORAGE_KEY)
+        console.log("Mounting sheet manager ", data)
+        if (data !== null) {
+            this.setState(JSON.parse(data))
+        }
+    }
+
+    componentDidUpdate(prevProps: SheetManagerProps, prevState: SheetManagerState) {
+        window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state))
     }
 
     updateSheet = (data: SheetData) => {
@@ -73,7 +88,7 @@ export class SheetManager extends React.Component<SheetManagerProps, SheetManage
     render() {
         const sheetData = this.state.sheets[this.state.currentSheet]
         const sheetListItems = Object.keys(this.state.sheets).map(sheetName =>
-            <ListItem key={sheetName} disablePadding>
+            <ListItem disablePadding key={sheetName}>
                 <EditableListItem
                     selected={sheetName === this.state.currentSheet}
                     onSelectSheet={this.handleSelectSheet}
@@ -85,17 +100,19 @@ export class SheetManager extends React.Component<SheetManagerProps, SheetManage
             <Stack direction='row'> {/*TODO change horizontal layout*/}
                 <Box sx={{ width: '10%', minWidth: 150 }}>
                     <nav aria-label="sheet labels">
-                        <List subheader={
+                        <List sx={{ height: '100vh', boxSizing: 'border-box', margin: 0, overflow: 'auto' }} subheader={
                             <ListSubheader component="div" id="nested-list-subheader">
                                 Todo Sheets
                             </ListSubheader>
                         }>
                             {sheetListItems}
-                            <ListItem disablePadding>
-                                <ListItemButton onClick={this.addSheet}>
-                                    <ListItemText secondary="Add new sheet" />
-                                </ListItemButton>
-                            </ListItem>
+                            {Object.keys(this.state.sheets).length < MAX_SHEET_COUNT &&
+                                <ListItem disablePadding>
+                                    <ListItemButton onClick={this.addSheet}>
+                                        <ListItemText secondary="Add new sheet" />
+                                    </ListItemButton>
+                                </ListItem>
+                            }
                         </List>
                     </nav>
                 </Box>
