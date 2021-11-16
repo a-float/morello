@@ -1,9 +1,11 @@
 import React from 'react'
 import { TaskColumn } from './TaskColumn'
-import { Container, Button, Grid } from '@mui/material'
+import { Container, Button, Stack, Box } from '@mui/material'
 import { TaskData } from './Task'
 import { defaultTask, SheetData } from "../database"
 import { TaskEditor } from './TaskEditor'
+import { Add } from '@mui/icons-material'
+import { grey } from '@mui/material/colors'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 
 export interface TaskDisplayProps {
@@ -199,31 +201,32 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
 
     render() {
         const gridColumns = [...Array(this.props.columns.length).keys()].map(colIdx =>
-            <Grid key={this.props.columns[colIdx]} item xs={12} sm={6} md={4} lg={3}>
-                <TaskColumn
-                    onAddNewTask={this.addNewTask}
-                    onDeleteTask={this.deleteTask}
-                    onStartTaskEdit={this.startTaskEdit}
-                    onNameChange={this.changeColumnName}
-                    onDeleteColumn={this.deleteColumn}
-                    name={this.props.columns[colIdx]}
-                    tasks={this.props.tasks.filter(task => task.columnId === colIdx)}
-                />
-            </Grid>)
+            <TaskColumn
+                key={this.props.columns[colIdx]}
+                onAddNewTask={this.addNewTask}
+                onDeleteTask={this.deleteTask}
+                onStartTaskEdit={this.startTaskEdit}
+                onNameChange={this.changeColumnName}
+                onDeleteColumn={this.deleteColumn}
+                name={this.props.columns[colIdx]}
+                tasks={this.props.tasks.filter(task => task.columnId === colIdx)}
+            />
+        )
         return (
             <Container>
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Grid container spacing={{ xs: 1, md: 2, xl: 2 }}>
+                    <Stack direction='row' spacing={1} sx={{ overflowX: 'scroll' }}>
                         {gridColumns}
-                        <Grid
-                            item
-                            sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
-                            xs={12} sm={6} md={4} lg={3}>
-                            <Button sx={{ marginTop: "2em" }} size='small' variant='outlined' onClick={this.addNewColumn}>
-                                Add new column
+                        <Box sx={{ height: '97vh', display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+                            <Button variant="text"
+                                sx={{ maxHeight: '30px', color: grey[800], justifyContent: 'flex-start' }}
+                                size='small'
+                                startIcon={<Add />}
+                                onClick={this.addNewColumn}>
+                                Add new task
                             </Button>
-                        </Grid>
-                    </Grid>
+                        </Box>
+                    </Stack>
                 </DragDropContext>
                 <TaskEditor
                     isOpen={this.state.isEditorOpen}
