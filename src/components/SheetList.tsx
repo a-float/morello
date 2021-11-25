@@ -13,11 +13,11 @@ type SheetListProps = {
     onSelectSheet: (name: string) => void,
     onRenameSheet: (oldName: string, newName: string) => void,
     maxSheetCount: number,
-    sheets: {[key: string]: SheetData},
+    sheets: { [key: string]: SheetData },
     selectedSheet: string
 }
 
-const SheetList :FunctionComponent<SheetListProps> = (props) => {
+const SheetList: FunctionComponent<SheetListProps> = (props) => {
     const sheetListItems = Object.keys(props.sheets).map(sheetName =>
         <ListItem disablePadding key={sheetName}>
             <EditableListItem
@@ -28,7 +28,7 @@ const SheetList :FunctionComponent<SheetListProps> = (props) => {
         </ListItem>
     )
     return (
-        <Box sx={{ width: '10%', minWidth: 150 }}>
+        <Box sx={{ width: '10%', minWidth: 150, maxWidth: 200 }}>
             <nav aria-label="sheet labels">
                 <List sx={{ height: '100vh', boxSizing: 'border-box', margin: 0, overflow: 'auto' }} subheader={
                     <ListSubheader component="div" id="nested-list-subheader">

@@ -1,6 +1,6 @@
-import React from 'react'
+import { Component } from 'react'
 import { TaskColumn } from './TaskColumn'
-import { Container, Button, Stack, Box } from '@mui/material'
+import { Button, Stack, Box } from '@mui/material'
 import { TaskData } from './Task'
 import { defaultTask, SheetData } from "../database"
 import { TaskEditor } from './TaskEditor'
@@ -23,7 +23,7 @@ interface TaskDisplayState {
     isEditorOpen: boolean
 }
 
-export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplayState>{
+export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
     state: TaskDisplayState = {
         editedTaskData: null,
         isEditorOpen: false

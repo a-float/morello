@@ -57,10 +57,10 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         <Stack position="absolute" right="0px" top="0.2em" direction="row" alignItems="center" justifyContent="flex-end">
                             {/* id={props.id}&nbsp;index={props.index}&nbsp; */}
                             <MyIcon color={grey[500]} hoverColor={grey[900]} onClick={startEdit}>
-                                <Edit fontSize="inherit" sx={{ fontSize: "0.6em" }} />
+                                <Edit fontSize="inherit" sx={{ fontSize: "0.8em" }} />
                             </MyIcon>
                             <MyIcon color={grey[500]} hoverColor={grey[900]}>
-                                <Close fontSize="inherit" sx={{ fontSize: "0.6em" }} onClick={() => props.onDeleteTask(props.id)} />
+                                <Close fontSize="inherit" sx={{ fontSize: "0.9em" }} onClick={() => props.onDeleteTask(props.id)} />
                             </MyIcon>
                         </Stack>
                     }

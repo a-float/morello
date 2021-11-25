@@ -1,7 +1,6 @@
-import React from 'react'
+import { Component } from 'react'
 import { TaskDisplay } from './TaskDisplay'
 import { SheetData, columns, tasks } from '../database'
-import Stack from '@mui/material/Stack'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import SheetList from './SheetList'
@@ -10,20 +9,20 @@ const MAX_SHEET_COUNT = 30
 const LOCAL_STORAGE_KEY = "MyToDO"
 
 interface SheetManagerProps {
-
+    onToggleDrawer: (toggle: boolean) => void,
+    isDrawerOpen: boolean
 }
 interface SheetManagerState {
     sheets: {
         [key: string]: SheetData
-    }
-    currentSheet: string,
-    isDrawerOpen: boolean
+    },
+    currentSheet: string
 }
-export class SheetManager extends React.Component<SheetManagerProps, SheetManagerState>{
+
+class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
     state: SheetManagerState = {
         sheets: { 'Basic sheet': { columns, tasks } }, // TODO change the initialization
         currentSheet: 'Basic sheet',
-        isDrawerOpen: false,
     }
 
     componentDidMount() {
@@ -78,24 +77,21 @@ export class SheetManager extends React.Component<SheetManagerProps, SheetManage
 
     handleSelectSheet = (sheetName: string) => {
         if (sheetName in this.state.sheets) {
-            this.setState({ currentSheet: sheetName, isDrawerOpen: false })
+            this.setState({ currentSheet: sheetName })
         } else {
             console.error(`tried to select ${sheetName} but such sheet doesn't exist.`)
         }
     }
 
-    toggleDrawer(newState: boolean) {
-        this.setState({ isDrawerOpen: newState })
-    }
-
     render() {
         const sheetData = this.state.sheets[this.state.currentSheet]
         return (
-            <Box sx={{ flex: "auto" }}>
+            // <Box sx={{ flex: "auto" }}>
+            <>
                 <Drawer
                     anchor={"left"}
-                    open={this.state.isDrawerOpen}
-                    onClose={event => this.setState({ isDrawerOpen: false })}
+                    open={this.props.isDrawerOpen}
+                    onClose={event => this.props.onToggleDrawer(false)}
                 >
                     <SheetList
                         sheets={this.state.sheets}
@@ -106,11 +102,14 @@ export class SheetManager extends React.Component<SheetManagerProps, SheetManage
                         selectedSheet={this.state.currentSheet}
                     />
                 </Drawer>
-                <TaskDisplay
+                <TaskDisplay // TODO get this out of SheetManager?
                     tasks={sheetData.tasks}
                     columns={sheetData.columns}
                     onChangeSheet={this.updateSheet} />
-            </Box>
+                </>
+            // {/* // </Box> */}
         )
     }
 }
+
+export default SheetManager
