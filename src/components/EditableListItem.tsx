@@ -9,7 +9,7 @@ type EditableListItemProps = {
     onSelectSheet: (sheetName: string) => void
 } & React.ComponentProps<typeof ListItemButton>
 
-export const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
+const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
     const { name, onRenameSheet, onSelectSheet, ...rest } = props
     const [inputValue, setInputValue] = useState(name)
     const [editable, setEditable] = useState(false)
@@ -56,3 +56,5 @@ export const EditableListItem: FunctionComponent<EditableListItemProps> = (props
         </ListItemButton>
     )
 }
+
+export default EditableListItem

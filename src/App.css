@@ -1,4 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 .App {
     font-family: 'Roboto', sans-serif;
+}
+
+*{
+    margin: 0px;
+}
+
+.title-font{
+    font-family: 'Dancing Script', cursive;
+}
+
+.gradient-bg{
+    background: #5c258d; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #5c258d, #4389a2); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #5c258d, #4389a2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }

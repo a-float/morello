@@ -15,7 +15,7 @@ export interface TaskDisplayProps {
 }
 /*
     need to keep editedTaskData and isEditorOpen separately. If the editor dialog window 
-    closes while the chips are dissappearing
+    closes while the chips are disappearing
     the closing animation gets laggy
 */
 interface TaskDisplayState {
@@ -137,6 +137,7 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
             }
             taskToMove.columnId = end
             foundCount = 0
+            console.log(destination.index)
             for (let task of this.props.tasks) {
                 if (task.id === taskToMove.id) continue
                 if (task.columnId === end) {
@@ -213,26 +214,24 @@ export class TaskDisplay extends React.Component<TaskDisplayProps, TaskDisplaySt
             />
         )
         return (
-            <Container>
+            <Box sx={{ height: "100%" }}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Stack direction='row' spacing={1} sx={{ overflowX: 'scroll' }}>
+                    <Stack direction='row' spacing={1} sx={{ overflowX: 'auto', overflowY: 'auto', height:"100%", minWidth: '100vw', maxWidth: '100vw' }}>
                         {gridColumns}
-                        <Box sx={{ height: '97vh', display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-                            <Button variant="text"
-                                sx={{ maxHeight: '30px', color: grey[800], justifyContent: 'flex-start' }}
-                                size='small'
-                                startIcon={<Add />}
-                                onClick={this.addNewColumn}>
-                                Add new task
-                            </Button>
-                        </Box>
+                        <Button variant="text"
+                            sx={{ maxHeight: '30px', color: grey[800], justifyContent: 'flex-start' }}
+                            size='small'
+                            startIcon={<Add />}
+                            onClick={this.addNewColumn}>
+                            Add new column
+                        </Button>
                     </Stack>
                 </DragDropContext>
                 <TaskEditor
                     isOpen={this.state.isEditorOpen}
                     taskData={this.state.editedTaskData}
                     onEndEdit={this.onEndTaskEdit} />
-            </Container>
+            </Box>
         )
     }
 }

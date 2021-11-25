@@ -1,7 +1,7 @@
 import { Card, CardContent, Stack, Typography } from '@mui/material'
 import { FunctionComponent, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import { Edit, Minimize, Close } from '@mui/icons-material';
+import { Edit, Close } from '@mui/icons-material';
 // import EditableTaskContent from "./EditableTaskContent"
 import MyIcon from "./MyIcon"
 import { grey } from '@mui/material/colors';
@@ -17,12 +17,6 @@ const CardContentEvenPadding = styled(CardContent)(`
     overflow: hidden;
     max-width: 100%;
 `);
-
-const textWrapStyle: any = {
-    overflowWrap: "break-word",
-    wordWrap: "break-word",
-    hyphens: "auto"
-}
 
 export interface TaskData {
     id: string,
@@ -60,13 +54,13 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                     }}
                 >
                     {state.showBar &&
-                        <Stack position="absolute" right="10px" direction="row" alignItems="center" justifyContent="flex-end">
+                        <Stack position="absolute" right="0px" top="0.2em" direction="row" alignItems="center" justifyContent="flex-end">
                             {/* id={props.id}&nbsp;index={props.index}&nbsp; */}
                             <MyIcon color={grey[500]} hoverColor={grey[900]} onClick={startEdit}>
-                                <Edit fontSize="small" />
+                                <Edit fontSize="inherit" sx={{ fontSize: "0.6em" }} />
                             </MyIcon>
                             <MyIcon color={grey[500]} hoverColor={grey[900]}>
-                                <Close fontSize="small" onClick={() => props.onDeleteTask(props.id)} />
+                                <Close fontSize="inherit" sx={{ fontSize: "0.6em" }} onClick={() => props.onDeleteTask(props.id)} />
                             </MyIcon>
                         </Stack>
                     }

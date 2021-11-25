@@ -6,7 +6,6 @@ import { tagColors } from '../tmpUtils'
 const TagBar: FunctionComponent<{ color: string; }> = (props) => {
     return (
         <Box
-            component="span"
             sx={{
                 width: "2.7em",
                 height: "0.4em",
@@ -26,7 +25,7 @@ export const TagRow: FunctionComponent<{ tags: string[] }> = (props) => {
 
     if (tagBars.length > 0) {
         return (
-            <Stack direction="row" spacing={1} sx={{ margin: "0.4em 0" }}>
+            <Stack direction="row" spacing={1} sx={{ maxWidth: "85%", margin: "0.4em 0" }}>
                 {tagBars}
             </Stack>
         )
