@@ -1,1 +1,1 @@
-# Simple TODO app created using React with MaterialUI
+TODO app created using React with MaterialUI
