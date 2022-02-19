@@ -47,20 +47,19 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                     {...provided.dragHandleProps}
                     sx={{
                         position: "relative",
-                        marginBottom: '0.34em',
-                        padding: '0.25em 0.45em',
-                        boxShadow: '0px 3px 1px 0px rgba(0,0,0,0.15)',
-                        backgroundColor: snapshot.isDragging ? 'lightblue' : 'white'
+                        marginBottom: '0.5em',
+                        padding: '0.6em 0.6em',
+                        border: snapshot.isDragging ? "solid 3px #545acd" : "none",
                     }}
                 >
                     {state.showBar &&
                         <Stack position="absolute" right="0px" top="0.2em" direction="row" alignItems="center" justifyContent="flex-end">
                             {/* id={props.id}&nbsp;index={props.index}&nbsp; */}
                             <MyIcon color={grey[500]} hoverColor={grey[900]} onClick={startEdit}>
-                                <Edit fontSize="inherit" sx={{ fontSize: "0.8em" }} />
+                                <Edit fontSize="inherit" />
                             </MyIcon>
                             <MyIcon color={grey[500]} hoverColor={grey[900]}>
-                                <Close fontSize="inherit" sx={{ fontSize: "0.9em" }} onClick={() => props.onDeleteTask(props.id)} />
+                                <Close fontSize="inherit" onClick={() => props.onDeleteTask(props.id)} />
                             </MyIcon>
                         </Stack>
                     }
@@ -69,9 +68,9 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         <Typography variant='subtitle1' sx={{ lineHeight: '1.25' }} component="div">
                             {props.name}
                         </Typography>
-                        <Typography variant='body2' sx={{ lineHeight: '1.25' }} component="div">
+                        {props.descr && <Typography variant='body2' sx={{ marginTop: "0.3em", lineHeight: '1.25', color: grey[500] }} component="div">
                             {props.descr}
-                        </Typography>
+                        </Typography>}
                     </CardContentEvenPadding>
                 </Card >
             )

@@ -86,8 +86,7 @@ class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
     render() {
         const sheetData = this.state.sheets[this.state.currentSheet]
         return (
-            // <Box sx={{ flex: "auto" }}>
-            <>
+            <Box sx={{ flexGrow: 1}}>
                 <Drawer
                     anchor={"left"}
                     open={this.props.isDrawerOpen}
@@ -106,8 +105,7 @@ class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
                     tasks={sheetData.tasks}
                     columns={sheetData.columns}
                     onChangeSheet={this.updateSheet} />
-                </>
-            // {/* // </Box> */}
+            </Box>
         )
     }
 }

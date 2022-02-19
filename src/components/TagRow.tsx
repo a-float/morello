@@ -25,7 +25,7 @@ export const TagRow: FunctionComponent<{ tags: string[] }> = (props) => {
 
     if (tagBars.length > 0) {
         return (
-            <Stack direction="row" spacing={1} sx={{ maxWidth: "85%", margin: "0.4em 0" }}>
+            <Stack direction="row" spacing={1} sx={{ maxWidth: "85%", marginBottom: "0.5em" }}>
                 {tagBars}
             </Stack>
         )

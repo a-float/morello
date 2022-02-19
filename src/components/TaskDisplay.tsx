@@ -1,12 +1,13 @@
 import { Component } from 'react'
 import { TaskColumn } from './TaskColumn'
-import { Button, Stack, Box } from '@mui/material'
+import { Stack, Box } from '@mui/material'
 import { TaskData } from './Task'
 import { defaultTask, SheetData } from "../database"
 import { TaskEditor } from './TaskEditor'
 import { Add } from '@mui/icons-material'
-import { grey } from '@mui/material/colors'
+// import { grey } from '@mui/material/colors'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
+import Fab from '@mui/material/Fab';
 
 export interface TaskDisplayProps {
     columns: string[],
@@ -216,21 +217,19 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
         return (
             <Box sx={{ height: "100%" }}>
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Stack direction='row' spacing={1} sx={{ overflowX: 'auto', overflowY: 'auto', height:"100%", minWidth: '100vw', maxWidth: '100vw' }}>
+                    {/* minWidth: '100vw', maxWidth: '100vw' */}
+                    <Stack direction='row' spacing="20px" sx={{ boxSizing: "border-box", height: "100%", padding: "20px", overflowX: 'auto', overflowY: 'auto', width: "100%" }}>
                         {gridColumns}
-                        <Button variant="text"
-                            sx={{ maxHeight: '30px', color: grey[800], justifyContent: 'flex-start' }}
-                            size='small'
-                            startIcon={<Add />}
-                            onClick={this.addNewColumn}>
-                            Add new column
-                        </Button>
                     </Stack>
                 </DragDropContext>
                 <TaskEditor
                     isOpen={this.state.isEditorOpen}
                     taskData={this.state.editedTaskData}
                     onEndEdit={this.onEndTaskEdit} />
+                <Fab variant="circular" aria-label="add_column" onClick={this.addNewColumn}
+                    sx={{ position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
+                    <Add sx={{ color: "#5157cb" }} />
+                </Fab>
             </Box>
         )
     }

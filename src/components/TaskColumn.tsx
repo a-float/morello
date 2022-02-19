@@ -3,7 +3,7 @@ import { Button, Stack, Typography, TextField, Box } from '@mui/material'
 import { FunctionComponent, useState } from 'react'
 import MyIcon from './MyIcon'
 import { Task, TaskData } from './Task'
-import { grey, red } from '@mui/material/colors'
+import { grey } from '@mui/material/colors'
 import { Droppable } from 'react-beautiful-dnd'
 
 export interface TaskColumnData {
@@ -30,7 +30,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
             onDeleteTask={(id) => { props.onDeleteTask(id, props.name) }} />
     )
     return (
-        <Stack spacing={1} sx={{ width: '30%', minWidth: '200px', maxWidth:"280px", minHeight: "30px", backgroundColor: grey[200], padding: '0.4em', height: "fit-content" }}>
+        <Stack spacing={1} sx={{ color:grey[900], borderRadius: "4px", width: '30%', minWidth: '200px', maxWidth: "280px", minHeight: "30px", padding: '0.6em', backgroundColor:"rgba(255,255,255,0.7)", height: "fit-content" }}>
             <Box
                 sx={{ position: 'relative' }}
                 onDoubleClick={() => { setState(prevState => ({ ...prevState, showBar: false, editable: true })) }}
@@ -42,11 +42,11 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                     <Stack position="absolute" right="-0.1em" top="-0.1em" direction="row" alignItems="center" justifyContent="flex-end">
                         <MyIcon color={grey[500]} hoverColor={grey[900]}
                             onClick={() => setState(prevState => ({ ...prevState, editable: true, showBar: false }))}>
-                            <Edit fontSize="inherit" sx={{ fontSize: "0.6em" }} />
+                            <Edit fontSize="inherit" />
                         </MyIcon>
-                        <MyIcon color={red[500]} hoverColor={red[900]}
+                        <MyIcon color={grey[500]} hoverColor={grey[900]}
                             onClick={() => props.onDeleteColumn(props.name)}>
-                            <Close fontSize="inherit" sx={{ fontSize: "0.7em" }} />
+                            <Close fontSize="inherit" />
                         </MyIcon>
                     </Stack>
                 }
@@ -85,7 +85,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                 )}
             </Droppable >
             <Button variant="text"
-                sx={{ color: grey[800], whiteSpace: 'nowrap', justifyContent: 'flex-start' }}
+                sx={{color:grey[900], whiteSpace: 'nowrap', justifyContent: 'flex-start' }}
                 size='small'
                 startIcon={<Add />}
                 onClick={() => props.onAddNewTask(props.name)}>
