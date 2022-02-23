@@ -21,7 +21,6 @@ export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (pro
           id="mutliple-tag-select"
           multiple
           defaultValue={props.tags}
-          // sx={{padding: "0.1em", height: "4em"}}
           input={<OutlinedInput id="tag-input" label="Chip" />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>

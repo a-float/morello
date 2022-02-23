@@ -28,7 +28,9 @@ class App extends Component<{}, AppState> {
 	render() {
 		return (
 			<Box className="App, light-gradient-bg" sx={{ overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
-				<TopBar onToggleSheetDrawer={this.toggleSheetDrawer} onToggleSettingsDrawer={this.toggleSettingsDrawer} />
+				<TopBar isSheetDrawerOpen={this.state.isSheetsDrawerOpen}
+					onToggleSheetDrawer={this.toggleSheetDrawer}
+					onToggleSettingsDrawer={this.toggleSettingsDrawer} />
 				<SheetManager onToggleDrawer={this.toggleSheetDrawer} isDrawerOpen={this.state.isSheetsDrawerOpen} />
 				<SettingsManager onToggleDrawer={this.toggleSettingsDrawer} isDrawerOpen={this.state.isSettingsDrawerOpen} />
 			</Box >

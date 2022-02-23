@@ -1,9 +1,10 @@
-import { Component } from 'react'
+import { Component, FunctionComponent } from 'react'
 import { TaskDisplay } from './TaskDisplay'
 import { SheetData, columns, tasks } from '../database'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import SheetList from './SheetList'
+import useTheme from '@mui/material/styles/useTheme'
 
 const MAX_SHEET_COUNT = 30
 const LOCAL_STORAGE_KEY = "MyToDO"
@@ -19,6 +20,15 @@ interface SheetManagerState {
     currentSheet: string
 }
 
+/*
+Placed at the top of the drawers. Acts as padding. TODO change hardcoded background color to something transparent?
+opactiy and visibility don't work
+*/
+const TopBarSpacer: FunctionComponent<{}> = (props) => {
+    const theme = useTheme()
+    return <Box sx={{ ...theme.mixins.toolbar, backgroundColor: 'blue' }} />
+}
+
 class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
     state: SheetManagerState = {
         sheets: { 'Basic sheet': { columns, tasks } }, // TODO change the initialization
@@ -28,7 +38,6 @@ class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
     componentDidMount() {
         const storage = window.localStorage
         const data = storage.getItem(LOCAL_STORAGE_KEY)
-        // console.log("Mounting sheet manager ", data)
         if (data !== null) {
             this.setState(JSON.parse(data))
         }
@@ -60,10 +69,6 @@ class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
     }
 
     handleRenameSheet = (oldName: string, newName: string) => {
-        if (newName === oldName) {
-            console.log("Name hasn't been changed");
-            return
-        }
         this.setState(prevState => {
             const newSheets = {};
             delete Object.assign(newSheets, prevState.sheets, { [newName]: prevState.sheets[oldName] })[oldName];
@@ -83,28 +88,48 @@ class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
         }
     }
 
+    // TODO handle no sheets
+    handleDeleteSheet = (sheetName: string) => {
+        const index = Object.keys(this.state.sheets).sort().indexOf(sheetName)
+        this.setState(prevState => {
+            const newSheets = {};
+            delete Object.assign(newSheets, prevState.sheets)[sheetName];
+            const newCurrSheet =  Object.keys(newSheets).sort()[index === 0 ? 0 : index - 1]
+            return {
+                ...prevState,
+                sheets: newSheets,
+                currentSheet: newCurrSheet
+            }
+        })
+    }
+
     render() {
         const sheetData = this.state.sheets[this.state.currentSheet]
         return (
-            <Box sx={{ flexGrow: 1}}>
+            <Box sx={{ flexGrow: 1 }}>
                 <Drawer
                     anchor={"left"}
+                    variant={"persistent"}
                     open={this.props.isDrawerOpen}
                     onClose={event => this.props.onToggleDrawer(false)}
+                    sx={{ backgroundColor: 'red' }}
                 >
+                    <TopBarSpacer />
                     <SheetList
                         sheets={this.state.sheets}
                         onAddSheet={this.addSheet}
                         maxSheetCount={MAX_SHEET_COUNT}
                         onRenameSheet={this.handleRenameSheet}
                         onSelectSheet={this.handleSelectSheet}
+                        onDeleteSheet={this.handleDeleteSheet}
                         selectedSheet={this.state.currentSheet}
                     />
                 </Drawer>
                 <TaskDisplay // TODO get this out of SheetManager?
                     tasks={sheetData.tasks}
                     columns={sheetData.columns}
-                    onChangeSheet={this.updateSheet} />
+                    onChangeSheet={this.updateSheet}
+                    widthOffsets={{ left: this.props.isDrawerOpen ? 200 : 0, right: 0 }} />
             </Box>
         )
     }

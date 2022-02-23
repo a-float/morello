@@ -1,17 +1,17 @@
 import { Component } from 'react'
 import { TaskColumn } from './TaskColumn'
-import { Stack, Box } from '@mui/material'
+import { Stack } from '@mui/material'
 import { TaskData } from './Task'
 import { defaultTask, SheetData } from "../database"
 import { TaskEditor } from './TaskEditor'
 import { Add } from '@mui/icons-material'
-// import { grey } from '@mui/material/colors'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import Fab from '@mui/material/Fab';
 
 export interface TaskDisplayProps {
     columns: string[],
     tasks: TaskData[],
+    widthOffsets: { left: number, right: number },
     onChangeSheet: (data: SheetData) => void
 }
 /*
@@ -215,10 +215,25 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             />
         )
         return (
-            <Box sx={{ height: "100%" }}>
+            <>
                 <DragDropContext onDragEnd={this.onDragEnd}>
-                    {/* minWidth: '100vw', maxWidth: '100vw' */}
-                    <Stack direction='row' spacing="20px" sx={{ boxSizing: "border-box", height: "100%", padding: "20px", overflowX: 'auto', overflowY: 'auto', width: "100%" }}>
+                    <Stack direction='row' spacing="20px" sx={{
+                        boxSizing: "border-box", height: "100%", padding: "20px", overflowX: 'auto', overflowY: 'auto',
+                        width: `calc(100% - ${this.props.widthOffsets.left + this.props.widthOffsets.right})`,
+                        marginLeft: `${this.props.widthOffsets.left}px`,
+                        marginRight: `${this.props.widthOffsets.right}px`,
+                        transition: (theme) => theme.transitions.create(['margin', 'width'], {
+                            ...(this.props.widthOffsets.left === 0 ?
+                                {
+                                    easing: theme.transitions.easing.sharp,
+                                    duration: theme.transitions.duration.leavingScreen
+                                } :
+                                {
+                                    easing: theme.transitions.easing.easeOut,
+                                    duration: theme.transitions.duration.enteringScreen
+                                })
+                        })
+                    }}>
                         {gridColumns}
                     </Stack>
                 </DragDropContext>
@@ -230,7 +245,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                     sx={{ position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
                     <Add sx={{ color: "#5157cb" }} />
                 </Fab>
-            </Box>
+            </>
         )
     }
 }
