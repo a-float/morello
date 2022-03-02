@@ -101,6 +101,29 @@ const myThemes: { name: string, options: any }[] = [
         }
     },
     {
+        name: "Dawn",
+        options: {
+            ...common,
+            ...{
+                palette:
+                {
+                    primary: {
+                        main: "#ff8e8a",
+                        light: "#ffd236",
+                        dark: "#ff50d7"
+                    },
+                    secondary: {
+                        main: "#fafafa"
+                    },
+                    background: {
+                        default:"linear-gradient(90deg, rgba(255,212,52,1) 0%, rgba(255,79,216,1) 100%)"
+                    }
+
+                }
+            }
+        }
+    },
+    {
         name: "Forest",
         options: {
             ...common,
@@ -117,6 +140,29 @@ const myThemes: { name: string, options: any }[] = [
                     },
                     background: {
                         default: "url(https://images.pexels.com/photos/15286/pexels-photo.jpg?auto=compress&cs=tinysrg&w=1260&h=750&dpr=2);"
+                    }
+
+                }
+            }
+        }
+    },
+    {
+        name: "JellyBean",
+        options: {
+            ...common,
+            ...{
+                palette:
+                {
+                    primary: {
+                        main: "#bd97eb",
+                        light: "#8bfafc",
+                        dark: "#ed35da"
+                    },
+                    secondary: {
+                        main: "#fafafa"
+                    },
+                    background: {
+                        default: "linear-gradient(to right, #ef32d9, #89fffd)"
                     }
 
                 }
