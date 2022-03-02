@@ -242,8 +242,8 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                     taskData={this.state.editedTaskData}
                     onEndEdit={this.onEndTaskEdit} />
                 <Fab variant="circular" aria-label="add_column" onClick={this.addNewColumn}
-                    sx={{ position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
-                    <Add sx={{ color: "#5157cb" }} />
+                    sx={{ backgroundColor: "secondary.main", position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
+                    <Add color="primary" />
                 </Fab>
             </>
         )

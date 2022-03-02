@@ -15,24 +15,24 @@ export interface TopBarProps {
 
 const TopBar: FunctionComponent<TopBarProps> = (props) => {
     return (
-        <AppBar position="sticky" sx={{zIndex: (theme) => theme.zIndex.drawer + 1, mixBlendMode: "screen", backgroundColor: 'white', color: "black", flex: "0 auto" }}>
+        <AppBar position="sticky" color='secondary' sx={{zIndex: (theme) => theme.zIndex.drawer + 1, flex: "0 auto" }}>
             <Toolbar variant="dense">
                 <IconButton
                     size="large"
                     edge="start"
-                    color="inherit"
-                    aria-label="menu"
+                    color="primary"
+                    aria-label="menu open"
                     onClick={() => props.onToggleSheetDrawer(!props.isSheetDrawerOpen)}
                 >
                     {props.isSheetDrawerOpen ? <ChevronLeftIcon /> : <MenuIcon />}
                 </IconButton>
-                <Typography variant="h6" component="div" className="title-font" sx={{ fontSize: "1.7rem", fontFamily: 'Dancing Script, cursive', textAlign: "center", flexGrow: 1 }}>
+                <Typography variant="h6" color="primary" component="div" sx={{ fontSize: "1.7rem", fontFamily: 'Dancing Script, cursive', textAlign: "center", flexGrow: 1 }}>
                     Morello
                 </Typography>
                 <IconButton
                     size="large"
                     edge="end"
-                    color="inherit"
+                    color="primary"
                     aria-label="settings gear"
                     onClick={() => props.onToggleSettingsDrawer(true)}
                 >

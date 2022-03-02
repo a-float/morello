@@ -1,5 +1,5 @@
 import { Close, Edit, Add } from '@mui/icons-material'
-import { Button, Stack, Typography, TextField, Box } from '@mui/material'
+import { Button, Stack, Typography, TextField, Box, useTheme } from '@mui/material'
 import { FunctionComponent, useState } from 'react'
 import MyIcon from './MyIcon'
 import { Task, TaskData } from './Task'
@@ -29,8 +29,9 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
             onStartEdit={props.onStartTaskEdit}
             onDeleteTask={(id) => { props.onDeleteTask(id, props.name) }} />
     )
+    const bgColor = useTheme().palette.mode === 'dark' ? 'rgba(30,30,30, .7)' : 'rgba(255, 255, 255, .6)'
     return (
-        <Stack spacing={1} sx={{ color:grey[900], borderRadius: "4px", width: '30%', minWidth: '200px', maxWidth: "280px", minHeight: "30px", padding: '0.6em', backgroundColor:"rgba(255,255,255,0.7)", height: "fit-content" }}>
+        <Stack spacing={1} sx={{ borderRadius: "4px", width: '30%', minWidth: '200px', maxWidth: "280px", minHeight: "30px", padding: '0.6em', backgroundColor: bgColor, height: "fit-content" }}>
             <Box
                 sx={{ position: 'relative' }}
                 onDoubleClick={() => { setState(prevState => ({ ...prevState, showBar: false, editable: true })) }}
@@ -85,7 +86,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                 )}
             </Droppable >
             <Button variant="text"
-                sx={{color:grey[900], whiteSpace: 'nowrap', justifyContent: 'flex-start' }}
+                sx={{ color:grey[700], whiteSpace: 'nowrap', justifyContent: 'flex-start' }}
                 size='small'
                 startIcon={<Add />}
                 onClick={() => props.onAddNewTask(props.name)}>

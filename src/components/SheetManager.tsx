@@ -1,10 +1,10 @@
-import { Component, FunctionComponent } from 'react'
+import { Component } from 'react'
 import { TaskDisplay } from './TaskDisplay'
 import { SheetData, columns, tasks } from '../database'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import SheetList from './SheetList'
-import useTheme from '@mui/material/styles/useTheme'
+import TopBarSpacer from './TopBarSpacer'
 
 const MAX_SHEET_COUNT = 30
 const LOCAL_STORAGE_KEY = "MyToDO"
@@ -18,15 +18,6 @@ interface SheetManagerState {
         [key: string]: SheetData
     },
     currentSheet: string
-}
-
-/*
-Placed at the top of the drawers. Acts as padding. TODO change hardcoded background color to something transparent?
-opactiy and visibility don't work
-*/
-const TopBarSpacer: FunctionComponent<{}> = (props) => {
-    const theme = useTheme()
-    return <Box sx={{ ...theme.mixins.toolbar, backgroundColor: 'blue' }} />
 }
 
 class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
@@ -94,7 +85,7 @@ class SheetManager extends Component<SheetManagerProps, SheetManagerState>{
         this.setState(prevState => {
             const newSheets = {};
             delete Object.assign(newSheets, prevState.sheets)[sheetName];
-            const newCurrSheet =  Object.keys(newSheets).sort()[index === 0 ? 0 : index - 1]
+            const newCurrSheet = Object.keys(newSheets).sort()[index === 0 ? 0 : index - 1]
             return {
                 ...prevState,
                 sheets: newSheets,

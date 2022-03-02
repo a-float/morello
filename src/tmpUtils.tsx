@@ -6,12 +6,6 @@ export const Tag = [
     "Home",
 ]
 
-export const DoneStatus = [
-    "Done",
-    "InProgress",
-    "To Do"
-]
-
 export const tagColors : Map<string, string> = new Map([
     ["Chill", "lightgreen",],
     ["Important", "gold",],
@@ -19,4 +13,3 @@ export const tagColors : Map<string, string> = new Map([
     ["School", "cyan",],
     ["Home", "pink"]
 ])
-   
