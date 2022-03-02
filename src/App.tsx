@@ -8,13 +8,15 @@ import themes from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
 import CssBaseline from '@mui/material/CssBaseline';
+import { defaultTagColors, TagColorContext } from './tags';
 
 
 type AppState = {
 	isSheetsDrawerOpen: boolean,
 	isSettingsDrawerOpen: boolean,
 	darkMode: boolean,
-	themeName: string
+	themeName: string,
+	tagColorMap: Map<string, string>
 }
 
 const App: FunctionComponent<{}> = () => {
@@ -22,7 +24,8 @@ const App: FunctionComponent<{}> = () => {
 		isSheetsDrawerOpen: false,
 		isSettingsDrawerOpen: false,
 		darkMode: false,
-		themeName: themes[0].name
+		themeName: themes[0].name,
+		tagColorMap: defaultTagColors
 	})
 
 	const toggleSheetDrawer = (toggle: boolean) => {
@@ -37,6 +40,9 @@ const App: FunctionComponent<{}> = () => {
 	const setDarkMode = (isDark: boolean) => {
 		setState({ ...state, darkMode: isDark })
 	}
+	const changeTagColors = (colors: Map<string, string>) => {
+		setState({ ...state, tagColorMap: colors })
+	}
 
 	// Update the theme only if the mode changes
 	const theme = useMemo(() => {
@@ -47,16 +53,22 @@ const App: FunctionComponent<{}> = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<CssBaseline/>
-			<Box className="App" sx={{background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
-				<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
-					onToggleSheetDrawer={toggleSheetDrawer}
-					onToggleSettingsDrawer={toggleSettingsDrawer} />
-				<SheetManager onToggleDrawer={toggleSheetDrawer} isDrawerOpen={state.isSheetsDrawerOpen} />
-				<SettingsManager onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}
-					currentThemeName={state.themeName} onSelectTheme={setTheme} onSetDarkMode={setDarkMode} isDarkMode={state.darkMode} />
-				<h1>{state.darkMode}</h1>
-			</Box >
+			<TagColorContext.Provider value={state.tagColorMap}>
+				<CssBaseline />
+				<Box className="App" sx={{ position:'relative', background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
+					<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
+						onToggleSheetDrawer={toggleSheetDrawer}
+						onToggleSettingsDrawer={toggleSettingsDrawer} />
+					<SheetManager onToggleDrawer={toggleSheetDrawer} isDrawerOpen={state.isSheetsDrawerOpen} />
+					<SettingsManager onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}
+						currentThemeName={state.themeName}
+						onSelectTheme={setTheme}
+						onSetDarkMode={setDarkMode}
+						isDarkMode={state.darkMode}
+						onChangeTagColors={changeTagColors} />
+					<h1>{state.darkMode}</h1>
+				</Box >
+			</TagColorContext.Provider>
 		</ThemeProvider>
 	)
 

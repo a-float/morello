@@ -21,6 +21,7 @@ type settingsManagerProps = {
     onSelectTheme: (name: string) => void,
     onSetDarkMode: (dark: boolean) => void,
     isDarkMode: boolean
+    onChangeTagColors: (colors: Map<string, string>) => void,
 }
 
 const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
