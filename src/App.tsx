@@ -7,6 +7,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import themes from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
+import CssBaseline from '@mui/material/CssBaseline';
 
 
 type AppState = {
@@ -27,8 +28,8 @@ const App: FunctionComponent<{}> = () => {
 	const toggleSheetDrawer = (toggle: boolean) => {
 		setState({ ...state, isSheetsDrawerOpen: toggle })
 	}
-	const toggleSettingsDrawer = (toggle: boolean) => {
-		setState({ ...state, isSettingsDrawerOpen: toggle })
+	const toggleSettingsDrawer = () => {
+		setState({ ...state, isSettingsDrawerOpen: !state.isSettingsDrawerOpen })
 	}
 	const setTheme = (newThemeName: string) => {
 		setState({ ...state, themeName: newThemeName })
@@ -46,6 +47,7 @@ const App: FunctionComponent<{}> = () => {
 
 	return (
 		<ThemeProvider theme={theme}>
+			<CssBaseline/>
 			<Box className="App" sx={{background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
 				<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
 					onToggleSheetDrawer={toggleSheetDrawer}

@@ -15,7 +15,7 @@ interface MultipleTagSelectProps {
 export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (props) => {
   return (
     <div>
-      <FormControl sx={{ my: 1, minWidth: 300 }}>
+      <FormControl sx={{ my: 1, width: '100%' }}>
         <InputLabel id="demo-multiple-chip-label">Tags</InputLabel>
         <Select
           id="mutliple-tag-select"

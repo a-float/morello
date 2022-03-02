@@ -218,6 +218,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             <>
                 <DragDropContext onDragEnd={this.onDragEnd}>
                     <Stack direction='row' spacing="20px" sx={{
+                        position: 'relative',
                         boxSizing: "border-box", height: "100%", padding: "20px", overflowX: 'auto', overflowY: 'auto',
                         width: `calc(100% - ${this.props.widthOffsets.left + this.props.widthOffsets.right})`,
                         marginLeft: `${this.props.widthOffsets.left}px`,
@@ -235,16 +236,17 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                         })
                     }}>
                         {gridColumns}
+                        <Fab variant="circular" aria-label="add_column" onClick={this.addNewColumn}
+                            color="inherit"
+                            sx={{position: "absolute", bottom: "20px", right: "20px", margin: "0px" }}>
+                            <Add color="primary" />
+                        </Fab>
                     </Stack>
                 </DragDropContext>
                 <TaskEditor
                     isOpen={this.state.isEditorOpen}
                     taskData={this.state.editedTaskData}
                     onEndEdit={this.onEndTaskEdit} />
-                <Fab variant="circular" aria-label="add_column" onClick={this.addNewColumn}
-                    sx={{ backgroundColor: "secondary.main", position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
-                    <Add color="primary" />
-                </Fab>
             </>
         )
     }

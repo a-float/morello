@@ -52,7 +52,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                     </Stack>
                 }
                 {!state.editable ?
-                    <Typography align="center" variant='h5'>{props.name}</Typography>
+                    <Typography align="center" variant='h5' sx={{ color: 'text.primary' }}>{props.name}</Typography>
                     :
                     <form onSubmit={(event) => {
                         event.preventDefault()
@@ -86,7 +86,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                 )}
             </Droppable >
             <Button variant="text"
-                sx={{ color:grey[700], whiteSpace: 'nowrap', justifyContent: 'flex-start' }}
+                sx={{ color: 'text.secondary', whiteSpace: 'nowrap', justifyContent: 'flex-start' }}
                 size='small'
                 startIcon={<Add />}
                 onClick={() => props.onAddNewTask(props.name)}>

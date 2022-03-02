@@ -10,12 +10,12 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 export interface TopBarProps {
     onToggleSheetDrawer: (toggle: boolean) => void,
     isSheetDrawerOpen: boolean,
-    onToggleSettingsDrawer: (toggle: boolean) => void
+    onToggleSettingsDrawer: () => void
 }
 
 const TopBar: FunctionComponent<TopBarProps> = (props) => {
     return (
-        <AppBar position="sticky" color='secondary' sx={{zIndex: (theme) => theme.zIndex.drawer + 1, flex: "0 auto" }}>
+        <AppBar position="sticky" color='secondary' sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, flex: "0 auto", order: { xs: 1, sm: -1 } }}>
             <Toolbar variant="dense">
                 <IconButton
                     size="large"
@@ -34,7 +34,7 @@ const TopBar: FunctionComponent<TopBarProps> = (props) => {
                     edge="end"
                     color="primary"
                     aria-label="settings gear"
-                    onClick={() => props.onToggleSettingsDrawer(true)}
+                    onClick={() => props.onToggleSettingsDrawer()}
                 >
                     <SettingsIcon />
                 </IconButton>
