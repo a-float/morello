@@ -11,8 +11,10 @@ import themes from '../themes'
 import Grid from "@mui/material/Grid"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThemePreview from './ThemePreview';
-import { Button, FormControlLabel, Switch } from '@mui/material';
+import { Button, FormControlLabel, Switch, Stack } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import { defaultTagColors } from '../tags';
+import TagEditItem from './TagEditItem';
 
 type settingsManagerProps = {
     isDrawerOpen: boolean,
@@ -40,6 +42,11 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
         </ThemeProvider>
     </Grid >)
 
+    const tagEditItems = [...defaultTagColors.keys()].map(k =>
+        <TagEditItem key={k}
+            name={k}
+            color={defaultTagColors.get(k) || 'red'} />)
+
     return (
         <Drawer
             anchor={"right"}
@@ -58,10 +65,9 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
                         <Typography>Tags</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                        </Typography>
+                        <Stack spacing={3}>
+                            {tagEditItems}
+                        </Stack>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>

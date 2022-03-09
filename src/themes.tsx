@@ -124,29 +124,6 @@ const myThemes: { name: string, options: any }[] = [
         }
     },
     {
-        name: "Forest",
-        options: {
-            ...common,
-            ...{
-                palette:
-                {
-                    primary: {
-                        main: "#4da029",
-                        light: "#939678",
-                        dark: "#031105"
-                    },
-                    secondary: {
-                        main: "#fafafa"
-                    },
-                    background: {
-                        default: "url(https://images.pexels.com/photos/15286/pexels-photo.jpg?auto=compress&cs=tinysrg&w=1260&h=750&dpr=2);"
-                    }
-
-                }
-            }
-        }
-    },
-    {
         name: "JellyBean",
         options: {
             ...common,
