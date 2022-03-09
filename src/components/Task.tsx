@@ -8,6 +8,7 @@ import { grey } from '@mui/material/colors';
 import { TagRow } from './TagRow'
 import { Draggable } from 'react-beautiful-dnd'
 import '../App.css'
+import { useTheme } from "@mui/material/styles"
 
 const CardContentEvenPadding = styled(CardContent)(`
     padding: 0;
@@ -35,6 +36,7 @@ export type TaskProps = {
 export const Task: FunctionComponent<TaskProps> = (props) => {
     const [state, setState] = useState({ showBar: false })
     const startEdit = () => props.onStartEdit(props.id)
+    const theme = useTheme()
     return (
         <Draggable draggableId={props.id} index={props.index}>
             {(provided, snapshot) => (
@@ -49,7 +51,7 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         position: "relative",
                         marginBottom: '0.5em',
                         padding: '0.6em 0.6em',
-                        border: snapshot.isDragging ? "solid 3px #545acd" : "none",
+                        border: snapshot.isDragging ? `solid 3px ${theme.palette.primary.main}` : "none",
                     }}
                 >
                     {state.showBar &&
