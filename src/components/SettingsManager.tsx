@@ -11,10 +11,9 @@ import themes from '../themes'
 import Grid from "@mui/material/Grid"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThemePreview from './ThemePreview';
-import { Button, FormControlLabel, Switch, Stack } from '@mui/material';
+import { Button, FormControlLabel, Switch } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { defaultTagColors } from '../tags';
-import TagEditItem from './TagEditItem';
+import TagEditor from './TagEditor'
 
 type settingsManagerProps = {
     isDrawerOpen: boolean,
@@ -23,7 +22,7 @@ type settingsManagerProps = {
     onSelectTheme: (name: string) => void,
     onSetDarkMode: (dark: boolean) => void,
     isDarkMode: boolean
-    onChangeTagColors: (colors: Map<string, string>) => void,
+    // onChangeTagColors: (name: string, color: string) => string | void,
 }
 
 const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
@@ -41,11 +40,6 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
             </Button>
         </ThemeProvider>
     </Grid >)
-
-    const tagEditItems = [...defaultTagColors.keys()].map(k =>
-        <TagEditItem key={k}
-            name={k}
-            color={defaultTagColors.get(k) || 'red'} />)
 
     return (
         <Drawer
@@ -65,9 +59,7 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
                         <Typography>Tags</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Stack spacing={3}>
-                            {tagEditItems}
-                        </Stack>
+                        <TagEditor/>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>

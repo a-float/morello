@@ -70,7 +70,7 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         <Typography variant='subtitle1' sx={{ lineHeight: '1.25' }} component="div">
                             {props.name}
                         </Typography>
-                        {props.descr && <Typography variant='body2' sx={{ marginTop: "0.3em", lineHeight: '1.25', color: grey[500] }} component="div">
+                        {props.descr && <Typography variant='body2' sx={{ whiteSpace: "pre-line", marginTop: "0.3em", lineHeight: '1.25', color: grey[500] }} component="div">
                             {props.descr}
                         </Typography>}
                     </CardContentEvenPadding>

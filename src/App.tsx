@@ -8,7 +8,7 @@ import themes from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
 import CssBaseline from '@mui/material/CssBaseline';
-import { defaultTagColors, TagColorContext } from './tags';
+import { TagManager, TagContext } from './TagManager';
 
 
 type AppState = {
@@ -16,7 +16,8 @@ type AppState = {
 	isSettingsDrawerOpen: boolean,
 	darkMode: boolean,
 	themeName: string,
-	tagColorMap: Map<string, string>
+	tagManager: TagManager
+	// tagColorMap: Map<string, string>
 }
 
 const App: FunctionComponent<{}> = () => {
@@ -25,7 +26,8 @@ const App: FunctionComponent<{}> = () => {
 		isSettingsDrawerOpen: false,
 		darkMode: false,
 		themeName: themes[0].name,
-		tagColorMap: defaultTagColors
+		tagManager: new TagManager()
+		// tagColorMap: defaultTagColors
 	})
 
 	const toggleSheetDrawer = (toggle: boolean) => {
@@ -40,9 +42,6 @@ const App: FunctionComponent<{}> = () => {
 	const setDarkMode = (isDark: boolean) => {
 		setState({ ...state, darkMode: isDark })
 	}
-	const changeTagColors = (colors: Map<string, string>) => {
-		setState({ ...state, tagColorMap: colors })
-	}
 
 	// Update the theme only if the mode changes
 	const theme = useMemo(() => {
@@ -51,11 +50,12 @@ const App: FunctionComponent<{}> = () => {
 		return createTheme(options)
 	}, [state.themeName, state.darkMode])
 
+
 	return (
 		<ThemeProvider theme={theme}>
-			<TagColorContext.Provider value={state.tagColorMap}>
+			<TagContext.Provider value={state.tagManager}>
 				<CssBaseline />
-				<Box className="App" sx={{ position:'relative', background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
+				<Box className="App" sx={{ position: 'relative', background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
 					<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
 						onToggleSheetDrawer={toggleSheetDrawer}
 						onToggleSettingsDrawer={toggleSettingsDrawer} />
@@ -64,14 +64,16 @@ const App: FunctionComponent<{}> = () => {
 						currentThemeName={state.themeName}
 						onSelectTheme={setTheme}
 						onSetDarkMode={setDarkMode}
-						isDarkMode={state.darkMode}
-						onChangeTagColors={changeTagColors} />
+						isDarkMode={state.darkMode}/>
 					<h1>{state.darkMode}</h1>
 				</Box >
-			</TagColorContext.Provider>
+			</TagContext.Provider>
 		</ThemeProvider>
 	)
 
 }
 
 export default App;
+// background: linear-gradient(to right, #ef32d9, #89fffd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+// background: linear-gradient(to right, #ff5f6d, #ffc371); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+// background: linear-gradient(90deg, rgba(255,212,52,1) 0%, rgba(255,79,216,1) 100%);

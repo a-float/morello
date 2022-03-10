@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { FunctionComponent } from 'react'
-import { TagColorContext } from '../tags'
+import { TagContext } from '../TagManager'
 
 const TagBar: FunctionComponent<{ color: string; }> = (props) => {
     return (
@@ -20,9 +20,9 @@ export const TagRow: FunctionComponent<{ tags: string[] }> = (props) => {
     if (props.tags.length > 0) {
         return (
             <Stack direction="row" spacing={1} sx={{ maxWidth: "85%", marginBottom: "0.5em" }}>
-                <TagColorContext.Consumer>
-                    {tagColors => props.tags.map(tagName => <TagBar key={tagName} color={tagColors.get(tagName) || "red"} />)}
-                </TagColorContext.Consumer>
+                <TagContext.Consumer>
+                    {tagManager => props.tags.map(tagName => <TagBar key={tagName} color={tagManager.getColor(tagName)} />)}
+                </TagContext.Consumer>
             </Stack>
         )
     } else return null

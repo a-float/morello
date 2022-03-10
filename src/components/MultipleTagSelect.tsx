@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import { TagColorContext } from '../tags'
+import { TagContext } from '../TagManager'
 
 interface MultipleTagSelectProps {
   tags: string[],
@@ -17,32 +17,32 @@ export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (pro
     <div>
       <FormControl sx={{ my: 1, width: '100%' }}>
         <InputLabel id="demo-multiple-chip-label">Tags</InputLabel>
-        <TagColorContext.Consumer>
-          {tagColors => (<Select
+        <TagContext.Consumer>
+          {tagManager => (<Select
             id="mutliple-tag-select"
             multiple
             defaultValue={props.tags}
             input={<OutlinedInput id="tag-input" label="Chip" />}
             renderValue={(selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} sx={{ backgroundColor: tagColors.get(value) || 'grey' }} />
+                {selected.map((name) => (
+                  <Chip key={name} label={name} sx={{ backgroundColor: tagManager.getColor(name) }} />
                 ))}
               </Box>
             )}
           >
 
-            {Array.from(tagColors.keys()).map((tag: string) => (
+            {tagManager.getTags().map(tag => (
               <MenuItem
-                key={tag}
-                value={tag}
+                key={tag.name}
+                value={tag.name}
               >
-                {tag}
+                {tag.name}
               </MenuItem>
             ))}
           </Select>)
           }
-        </TagColorContext.Consumer>
+        </TagContext.Consumer>
       </FormControl>
     </div>
   );
