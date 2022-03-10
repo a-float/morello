@@ -32,12 +32,12 @@ export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (pro
             )}
           >
 
-            {tagManager.getTags().map(tag => (
+            {tagManager.getTags().map(t => t.name).map(tag => (
               <MenuItem
-                key={tag.name}
-                value={tag.name}
+                key={tag}
+                value={tag}
               >
-                {tag.name}
+                {tag}
               </MenuItem>
             ))}
           </Select>)

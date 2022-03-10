@@ -64,7 +64,7 @@ const App: FunctionComponent<{}> = () => {
 						currentThemeName={state.themeName}
 						onSelectTheme={setTheme}
 						onSetDarkMode={setDarkMode}
-						isDarkMode={state.darkMode}/>
+						isDarkMode={state.darkMode} />
 					<h1>{state.darkMode}</h1>
 				</Box >
 			</TagContext.Provider>
@@ -74,6 +74,3 @@ const App: FunctionComponent<{}> = () => {
 }
 
 export default App;
-// background: linear-gradient(to right, #ef32d9, #89fffd); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-// background: linear-gradient(to right, #ff5f6d, #ffc371); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-// background: linear-gradient(90deg, rgba(255,212,52,1) 0%, rgba(255,79,216,1) 100%);

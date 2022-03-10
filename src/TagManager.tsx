@@ -1,15 +1,15 @@
 import { createContext } from "react"
 
 class TagManager {
-    static defaultTagColor = 'grey'
+    static defaultTag = { name: "Default", color: '#bababa' }
 
     static defaultTags = [
-        { name: "Default", color: TagManager.defaultTagColor },
-        { name: "Chill", color: "lightgreen" },
-        { name: "Important", color: "gold" },
-        { name: "VeryImportant", color: "salmon" },
-        { name: "School", color: "cyan" },
-        { name: "Home", color: "pink" },
+        TagManager.defaultTag,
+        { name: "Chill", color: "#90EE90" },            //lightgreen
+        { name: "Important", color: "#FFD700" },        //gold
+        { name: "VeryImportant", color: "#FA8072" },    //salmon
+        { name: "School", color: "#00FFFF" },           //cyan
+        { name: "Home", color: "#FFC0CB" },             //pink
     ]
 
     tags: { name: string, color: string }[]
@@ -23,7 +23,7 @@ class TagManager {
     }
 
     getTags() {
-        return this.tags.filter(tag => tag.name != "Default")
+        return this.tags.filter(tag => tag.name !== TagManager.defaultTag.name)
     }
 
     reset() {
@@ -35,6 +35,7 @@ class TagManager {
     }
 
     renameTag(oldName: string, newName: string) {
+        if (oldName === TagManager.defaultTag.name) return "Can not modify the default tag name"
         if (this.getTag(newName)) return `Tag "${newName}" already exists`
         const oldTag = this.getTag(oldName)
         if (!oldTag) return `Tag "${oldName} does not exist`
@@ -50,7 +51,7 @@ class TagManager {
     }
 
     getColor(name: string) {
-        return this.getTag(name)?.color || this.getTag("Default")!.color;
+        return this.getTag(name)?.color || this.tags[0].color // Default tag
     }
 }
 

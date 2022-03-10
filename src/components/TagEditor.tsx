@@ -23,6 +23,10 @@ const TagEditor: FunctionComponent<{}> = (props) => {
         setState({ ...state, currName: '' })
     }
 
+    const handleRenameTag = (tagManager: TagManager, oldName: string, newName: string) => {
+        return tagManager.renameTag(oldName, newName)
+    }
+
     return (
         <TagContext.Consumer>
             {tagManager => (<Stack spacing={3}>
@@ -30,7 +34,8 @@ const TagEditor: FunctionComponent<{}> = (props) => {
                     <TagEditItem key={tag.name}
                         name={tag.name}
                         color={tagManager.getColor(tag.name)}
-                        onOpenPicker={handleOpenPicker} />))
+                        onOpenPicker={handleOpenPicker}
+                        onChangeName={(x, y) => handleRenameTag(tagManager, x, y)} />))
                 }
                 <Popover
                     id={'tag-color-picker'}
