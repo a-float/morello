@@ -49,7 +49,7 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
             id="settings-drawer"
         >
             <TopBarSpacer />
-            <Box id="settings-container" sx={{ minWidth: "200px", maxWidth: "300px" }}>
+            <Box id="settings-container" sx={{ minWidth: "250px", maxWidth: "320px" }}>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}

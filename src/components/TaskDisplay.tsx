@@ -31,10 +31,10 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
     }
 
     addNewTask = (columnName: string) => {
+        // TODO make sure no two ids are the same
         const id = Math.floor(Math.random() * 100000).toString()
         const newTask = { ...defaultTask, columnId: this.props.columns.indexOf(columnName), id }
         this.openEditor(newTask)
-        // console.log("A task with id " + id + " has been created.")
     }
 
     deleteTask = (id: string) => {
@@ -243,7 +243,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                     onEndEdit={this.onEndTaskEdit} />
                 <Fab variant="circular" aria-label="add_column" onClick={this.addNewColumn}
                     color="inherit"
-                    sx={{ position: "absolute", bottom: "20px", right: "20px", margin: "0px" }}>
+                    sx={{ position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
                     <Add color="primary" />
                 </Fab>
             </>

@@ -8,7 +8,7 @@ opactity and visibility don't work
 const TopBarSpacer: FunctionComponent<{}> = (props) => {
     // const theme = useTheme()
     // TODO fix hardcoded height. all mixins breaks when the screen size is close to a tablet
-    return <Box sx={{ height: { xs: 0, sm: "48px" } }} />
+    return <Box sx={{ height: { xs: "48px" } }} />
 }
 
 export default TopBarSpacer

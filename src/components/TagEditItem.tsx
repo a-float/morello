@@ -18,8 +18,7 @@ type TagEditItemProps = {
 
 // TODO create one shared Popover for all tag items?
 const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
-    console.log(colord(props.color).toHex());
-    const darkerTone = colord(props.color).shades(5)[1].toHex()
+    const darkerTone = colord(props.color).shades(10)[1].toHex()
     const StyledButton = styled(Button)`
         background-color: ${props.color};
         padding: 6px 12px;
@@ -41,7 +40,7 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
                     onChange={event => props.onChangeName(props.name, event.target.value)}
                     sx={{ marginRight: "20px" }} />
                 <StyledButton variant="contained" onClick={event => props.onOpenPicker(event.target, props.name)}
-                    sx={{ backgroundColor: props.color, minHeight: "20px", maxWidth: "30px", marginRight: "6px" }}>
+                    sx={{ backgroundColor: props.color, minHeight: "1.5em", maxWidth: "2.2em", marginRight: "6px" }}>
                 </StyledButton>
             </Stack>
 
