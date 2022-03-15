@@ -1,49 +1,40 @@
 import TagEditItem from './TagEditItem';
-import { TagContext } from '../../TagManager'
+import { Tag, TagContext } from '../../TagManager'
 import Stack from '@mui/material/Stack'
 import { FunctionComponent, useState, useContext } from 'react';
-import {ColorResult, TwitterPicker } from 'react-color';
-import { TagManager } from '../../TagManager'
-import { Dialog } from '@mui/material';
+import { TwitterPicker } from 'react-color';
+import { Button, Dialog } from '@mui/material';
 
 type TagEditorState = {
-    currName: string,
+    editedTag: Tag | null,
     anchor: any
 }
 
 const TagEditor: FunctionComponent<{}> = (props) => {
-    const [state, setState] = useState<TagEditorState>({ currName: '', anchor: null })
+    const [state, setState] = useState<TagEditorState>({ editedTag: null, anchor: null })
 
-    const handleOpenPicker = (event: any, name: string) => {
-        setState({ currName: name, anchor: event.currentTarget })
+    const handleOpenPicker = (event: any, tag: Tag) => {
+        setState({ editedTag: tag, anchor: event.currentTarget })
     }
 
-    const handleChange = (tagManager: TagManager, colorResult: ColorResult) => {
-        tagManager.setTagColor(state.currName, colorResult.hex)
-        setState({...state})   // force recolor of tags
-    }
-
-    const handleRenameTag = (tagManager: TagManager, oldName: string, newName: string) => {
-        return tagManager.renameTag(oldName, newName)
-    }
-
-    const tagManager = useContext(TagContext)
+    const { tags, tagManager } = useContext(TagContext)
     return (
         <>
             <Stack spacing={3}>
-                {tagManager.getAllTags().map(tag => (
-                    <TagEditItem key={tag.name}
-                        name={tag.name}
-                        color={tagManager.getColor(tag.name)}
+                {tags.map(tag => (
+                    <TagEditItem key={tag.id}
+                        tag={tag}
                         onOpenPicker={handleOpenPicker}
-                        onChangeName={(x, y) => handleRenameTag(tagManager, x, y)} />))
+                        onChangeName={(x, y) => tagManager.renameTag(x, y)}
+                        onDelete={id => tagManager.removeTag(id)} />))
                 }
+                <Button variant="text" onClick={event => tagManager.addTag()}>Add tag</Button>
             </Stack>
             <Dialog
                 id={'tag-color-picker'}
-                open={state.currName.length > 0}
+                open={Boolean(state.editedTag)}
                 // anchorEl={state.anchor}
-                onClose={() => setState({ ...state, currName: '' })}
+                onClose={() => setState({ ...state, editedTag: null })}
             // anchorOrigin={{
             //     vertical: 'bottom',
             //     horizontal: 'center',
@@ -54,9 +45,9 @@ const TagEditor: FunctionComponent<{}> = (props) => {
             // }}
             >
                 <TwitterPicker
-                    color={tagManager.getColor(state.currName)}
-                    onChange={colorRes => handleChange(tagManager, colorRes)}
-                    />
+                    color={state.editedTag?.color || 'red'}
+                    onChangeComplete={colorRes => tagManager.setTagColor(state.editedTag!.id, colorRes.hex)} // TODO bad exclamation mark
+                />
             </Dialog>
         </>)
 

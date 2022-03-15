@@ -14,13 +14,14 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget)
         const tagInputValue = (e.currentTarget?.querySelector('#tag-input') as HTMLInputElement).value
-        const tags = tagInputValue === '' ? [] : tagInputValue.split(',')
-        tags.sort()
+        const tagIds = tagInputValue === '' ? [] : tagInputValue.split(',').map(Number)
+        tagIds.sort()
+
         const newTaskData: TaskData = {
             ...props.taskData!!,
             name: formData.get("name") as string,
             descr: formData.get("descr") as string,
-            tags
+            tagIds
         }
         props.onEndEdit(newTaskData);
     }
@@ -50,7 +51,7 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
                             variant="outlined"
                             required
                         />
-                        <MultipleTagSelect tags={props.taskData?.tags || []} />
+                        <MultipleTagSelect tags={props.taskData?.tagIds || []} />
                         <TextField
                             defaultValue={props.taskData?.descr}
                             multiline

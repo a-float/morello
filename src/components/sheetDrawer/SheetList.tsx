@@ -5,7 +5,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import EditableListItem from './EditableListItem'
 import { Close } from '@mui/icons-material';
-import MyIcon from "../tasks/MyIcon"
+import MyIcon from "../MyIcon"
 import { grey } from "@mui/material/colors"
 
 

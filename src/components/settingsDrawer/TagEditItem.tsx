@@ -1,26 +1,36 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import Stack from "@mui/material/Stack"
-
 import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
 import TextField from "@mui/material/TextField"
-import { TagManager } from '../../TagManager'
+import { Tag, TagManager } from '../../TagManager'
 import styled from "@mui/material/styles/styled";
 import { colord, extend } from 'colord'
 import mixPlugin from "colord/plugins/mix";
+import { Delete, MoreHoriz } from "@mui/icons-material";
+import { MenuItem, MenuList } from "@mui/material";
+import MyIcon from '../MyIcon'
+
 extend([mixPlugin]);
 
 type TagEditItemProps = {
-    name: string,
-    color: string,
-    onOpenPicker: (target: EventTarget, name: string) => void
-    onChangeName: (oldName: string, newName: string) => null | string
+    tag: Tag,
+    onOpenPicker: (target: EventTarget, tag: Tag) => void
+    onChangeName: (id: number, newName: string) => null | string,
+    onDelete: (id: number) => void
 }
 
 // TODO create one shared Popover for all tag items?
 const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
-    const darkerTone = colord(props.color).shades(10)[1].toHex()
+    const darkerTone = colord(props.tag.color).shades(10)[1].toHex()
+    const [anchorEl, setAnchorEl] = useState<null | any>(null)
+    const open = Boolean(anchorEl)
+    const openMenu = (event: React.MouseEvent<any>) => {
+        setAnchorEl(event.currentTarget)
+    }
+
     const StyledButton = styled(Button)`
-        background-color: ${props.color};
+        background-color: ${props.tag.color};
         padding: 6px 12px;
         &:hover {
             background-color: ${darkerTone};
@@ -33,17 +43,26 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
         <>
             <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <TextField
-                    disabled={props.name === TagManager.defaultTag.name}
+                    disabled={props.tag.name === TagManager.defaultTag.name}
                     size='small'
                     variant="outlined"
-                    defaultValue={props.name}
-                    onChange={event => props.onChangeName(props.name, event.target.value)}
+                    defaultValue={props.tag.name}
+                    onChange={event => props.onChangeName(props.tag.id, event.target.value)}
                     sx={{ marginRight: "20px" }} />
-                <StyledButton variant="contained" onClick={event => props.onOpenPicker(event.target, props.name)}
-                    sx={{ backgroundColor: props.color, minHeight: "1.5em", maxWidth: "2.2em", marginRight: "6px" }}>
+                <StyledButton variant="contained" onClick={event => props.onOpenPicker(event.target, props.tag)}
+                    sx={{ backgroundColor: props.tag.color, minHeight: "1.5em", maxWidth: "2.2em", margin: "0px 10px" }}>
                 </StyledButton>
+                <MyIcon color="#aaaaaa" hoverColor="#666666" onClick={openMenu}>
+                    <MoreHoriz />
+                </MyIcon>
             </Stack>
-
+            <Menu
+                id="delete-tag-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={() => setAnchorEl(null)}>
+                <MenuItem onClick={(event) => { setAnchorEl(null); props.onDelete(props.tag.id); }}>Delete</MenuItem>
+            </Menu>
         </>
     )
 }

@@ -7,7 +7,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import themes from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
-import { TagManager, TagContext } from './TagManager';
+import { TagManager, TagContext, Tag } from './TagManager';
 import { SheetData, columns, tasks } from './database'
 import SheetManager from './SheetManager';
 import { TaskDisplay } from './components/tasks/TaskDisplay';
@@ -19,7 +19,6 @@ type AppState = {
 	isSettingsDrawerOpen: boolean,
 	darkMode: boolean,
 	themeName: string,
-	tagManager: TagManager,
 }
 
 export type SheetState = {
@@ -35,10 +34,10 @@ const App: FunctionComponent<{}> = () => {
 		isSettingsDrawerOpen: false,
 		darkMode: false,
 		themeName: themes[0].name,
-		tagManager: new TagManager(),
 	})
+	const [tags, setTags] = useState<Tag[]>(TagManager.defaultTags)
 	const [sheets, setSheets] = useState<SheetState>({
-		sheets: { 'Basic sheet': { columns, tasks } }, // TODO change the initialization
+		sheets: { 'Basic sheet': { columns, tasks } }, // TODO change the initialization?
 		currentSheet: 'Basic sheet'
 	})
 
@@ -55,8 +54,34 @@ const App: FunctionComponent<{}> = () => {
 
 	useEffect(() => {
 		window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sheets))
-		sheetManagerRef.current.sheetState = sheets
-	}, [sheets])
+		sheetManagerRef.current.sheetState = sheets	// update managers' states
+		tagManagerRef.current.tags = tags
+	}, [sheets, tags])
+
+	// const handleRenameTag = (from: string, to: string) => {
+	// 	setSheets(prevState => {
+	// 		console.log(prevState);
+	// 		const copy: { [key: string]: SheetData } = {}
+	// 		for (const sheetName of [...Object.keys(prevState.sheets)]) {
+	// 			copy[sheetName] = {
+	// 				columns: [...prevState.sheets[sheetName].columns],
+	// 				tasks: [...prevState.sheets[sheetName].tasks]
+	// 			}
+	// 			for (const task of copy[sheetName].tasks) {
+	// 				task.tagIds = task.tagIds.map(tag => tag === from ? to : tag)
+	// 			}
+	// 		}
+	// 		return ({
+	// 			currentSheet: prevState.currentSheet,
+	// 			sheets: copy
+	// 		})
+	// 	})
+	// }
+	const handleRefreshTaskTags = () => {
+		console.log("Done");
+	}
+
+	const tagManagerRef = useRef<TagManager>(new TagManager(tags, setTags, handleRefreshTaskTags))
 
 	const toggleSheetDrawer = (toggle: boolean) => {
 		setState({ ...state, isSheetsDrawerOpen: toggle })
@@ -79,15 +104,14 @@ const App: FunctionComponent<{}> = () => {
 	}, [state.themeName, state.darkMode])
 
 	const currentSheetData = sheets.sheets[sheets.currentSheet]
-
 	return (
 		<ThemeProvider theme={theme}>
-			<TagContext.Provider value={state.tagManager}>
+			<TagContext.Provider value={{ tags, tagManager: tagManagerRef.current }}>
 				<Box className="App" sx={{ position: 'relative', background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
 					<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
 						onToggleSheetDrawer={toggleSheetDrawer}
 						onToggleSettingsDrawer={toggleSettingsDrawer} />
-					
+
 					<TaskDisplay
 						tasks={currentSheetData.tasks}
 						columns={currentSheetData.columns}

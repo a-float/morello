@@ -1,7 +1,7 @@
 import { Close, Edit, Add } from '@mui/icons-material'
 import { Button, Stack, Typography, TextField, Box, useTheme } from '@mui/material'
 import { FunctionComponent, useState } from 'react'
-import MyIcon from './MyIcon'
+import MyIcon from '../MyIcon'
 import { Task, TaskData } from './Task'
 import { grey } from '@mui/material/colors'
 import { Droppable } from 'react-beautiful-dnd'

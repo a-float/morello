@@ -4,7 +4,7 @@ import { FunctionComponent } from "react";
 interface IconProps {
     color?: string,
     hoverColor?: string,
-    onClick?: (event: Event) => void,
+    onClick?: (event: any) => void,
     children: JSX.Element
 }
 

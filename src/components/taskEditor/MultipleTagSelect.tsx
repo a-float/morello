@@ -10,13 +10,13 @@ import { TagContext } from '../../TagManager'
 import { colord } from 'colord';
 
 interface MultipleTagSelectProps {
-  tags: string[],
+  tags: number[],
 }
 
 export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (props) => {
-  const tagManager = useContext(TagContext)
-  const getTextColor = (name: string) => {
-    const bgColor = tagManager.getColor(name)
+  const {tagManager } = useContext(TagContext)
+  const getTextColor = (id: number) => {
+    const bgColor = tagManager.getColor(id)
     return colord(bgColor).toHsl().l < 50 ? "#fafafa" : "#131313"
   }
   return (
@@ -30,19 +30,19 @@ export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (pro
           input={<OutlinedInput id="tag-input" label="Chip" />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((name) => (
-                <Chip key={name} label={name} sx={{ color: getTextColor(name), backgroundColor: tagManager.getColor(name) }} />
+              {selected.map((id) => (
+                <Chip key={id} label={tagManager.getTag(id)?.name || "undefined"} sx={{ color: getTextColor(id), backgroundColor: tagManager.getColor(id) }} />
               ))}
             </Box>
           )}
         >
 
-          {tagManager.getTags().map(t => t.name).map(tag => (
+          {tagManager.getTags().map(tag => (
             <MenuItem
-              key={tag}
-              value={tag}
+              key={tag.id}
+              value={tag.id}
             >
-              {tag}
+              {tag.name}
             </MenuItem>
           ))}
         </Select>

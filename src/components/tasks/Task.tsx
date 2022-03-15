@@ -3,7 +3,7 @@ import { FunctionComponent, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { Edit, Close } from '@mui/icons-material';
 // import EditableTaskContent from "./EditableTaskContent"
-import MyIcon from "./MyIcon"
+import MyIcon from "../MyIcon"
 import { grey } from '@mui/material/colors';
 import { TagRow } from './TagRow'
 import { Draggable } from 'react-beautiful-dnd'
@@ -23,7 +23,7 @@ export interface TaskData {
     id: string,
     columnId: number,
     name: string,
-    tags: string[] | [],
+    tagIds: number[],
     dueDate?: Date,
     descr?: string,
 }
@@ -66,7 +66,7 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         </Stack>
                     }
                     <CardContentEvenPadding onDoubleClick={startEdit}>
-                        <TagRow tags={props.tags} />
+                        <TagRow tags={props.tagIds} />
                         <Typography variant='subtitle1' sx={{ lineHeight: '1.25' }} component="div">
                             {props.name}
                         </Typography>
