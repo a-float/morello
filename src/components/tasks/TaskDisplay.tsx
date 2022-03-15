@@ -12,7 +12,7 @@ export interface TaskDisplayProps {
     columns: string[],
     tasks: TaskData[],
     widthOffsets: { left: number, right: number },
-    onChangeSheet: (data: SheetData) => void
+    onModifySheet: (data: SheetData) => void
 }
 /*
     need to keep editedTaskData and isEditorOpen separately. If the editor dialog window 
@@ -39,7 +39,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
 
     deleteTask = (id: string) => {
         const newTasks = [...this.props.tasks.filter(task => task.id !== id)]
-        this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
+        this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
     }
 
     private getTaskById = (id: string) => {
@@ -64,7 +64,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             { ...updatedTask },
             ...this.props.tasks.slice(taskIdx + 1)
         ]
-        this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
+        this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
     }
 
     onEndTaskEdit = (data: TaskData | null) => {
@@ -120,7 +120,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             }
             if (foundCount <= destination.index) newTasks.push(taskToMove)
 
-            this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
+            this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
             return null
         }
         else { // different columns
@@ -138,7 +138,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             }
             taskToMove.columnId = end
             foundCount = 0
-            console.log(destination.index)
+            // console.log(destination.index)
             for (let task of this.props.tasks) {
                 if (task.id === taskToMove.id) continue
                 if (task.columnId === end) {
@@ -154,7 +154,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                 }
             }
             if (foundCount <= destination.index) newTasks.push(taskToMove)
-            this.props.onChangeSheet({ tasks: newTasks, columns: [...this.props.columns] })
+            this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
         }
         return null
     }
@@ -166,7 +166,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             columnCount += 1
         }
         const newColumns = [...this.props.columns, newName(columnCount)]
-        this.props.onChangeSheet({ tasks: [...this.props.tasks], columns: newColumns })
+        this.props.onModifySheet({ tasks: [...this.props.tasks], columns: newColumns })
     }
 
     changeColumnName = (oldName: string, newName: string) => {
@@ -184,7 +184,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             newName,
             ...this.props.columns.slice(colIdx + 1)
         ]
-        this.props.onChangeSheet({ tasks: [...this.props.tasks], columns: newColumns })
+        this.props.onModifySheet({ tasks: [...this.props.tasks], columns: newColumns })
     }
 
     deleteColumn = (columnName: string) => {
@@ -197,7 +197,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                 columns: this.props.columns.filter((col, i) => i !== colIdx),
                 tasks: this.props.tasks.filter(task => task.columnId !== colIdx)
             }
-            this.props.onChangeSheet(newDataSheet)
+            this.props.onModifySheet(newDataSheet)
         }
     }
 

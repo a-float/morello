@@ -17,7 +17,7 @@ export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (pro
   const tagManager = useContext(TagContext)
   const getTextColor = (name: string) => {
     const bgColor = tagManager.getColor(name)
-    return colord(bgColor).toHsl().l < 60 ? "#fafafa" : "#131313"
+    return colord(bgColor).toHsl().l < 50 ? "#fafafa" : "#131313"
   }
   return (
     <div>
