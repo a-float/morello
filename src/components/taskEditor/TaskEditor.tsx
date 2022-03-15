@@ -1,6 +1,6 @@
 import { FormEvent, FunctionComponent, FocusEvent} from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
-import { TaskData } from './Task'
+import { TaskData } from '../tasks/Task'
 import { MultipleTagSelect } from './MultipleTagSelect'
 
 interface TaskEditorProps {

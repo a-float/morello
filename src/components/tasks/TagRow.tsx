@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { FunctionComponent, useContext } from 'react'
-import { TagContext } from '../TagManager'
+import { TagContext } from '../../TagManager'
 
 const TagBar: FunctionComponent<{ color: string; }> = (props) => {
     return (

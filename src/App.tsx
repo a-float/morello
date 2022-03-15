@@ -1,13 +1,12 @@
 import './App.css';
 import { FunctionComponent, useMemo, useState } from 'react'
-import SheetManager from './components/SheetManager'
-import SettingsManager from './components/SettingsManager'
+import SheetManager from './components/sheetDrawer/SheetManager'
+import SettingsManager from './components/settingsDrawer/SettingsManager'
 import Box from '@mui/material/Box'
 import { ThemeProvider } from '@mui/material/styles';
 import themes from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
-import CssBaseline from '@mui/material/CssBaseline';
 import { TagManager, TagContext } from './TagManager';
 
 
@@ -54,7 +53,6 @@ const App: FunctionComponent<{}> = () => {
 	return (
 		<ThemeProvider theme={theme}>
 			<TagContext.Provider value={state.tagManager}>
-				<CssBaseline />
 				<Box className="App" sx={{ position: 'relative', background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
 					<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
 						onToggleSheetDrawer={toggleSheetDrawer}
@@ -65,7 +63,6 @@ const App: FunctionComponent<{}> = () => {
 						onSelectTheme={setTheme}
 						onSetDarkMode={setDarkMode}
 						isDarkMode={state.darkMode} />
-					<h1>{state.darkMode}</h1>
 				</Box >
 			</TagContext.Provider>
 		</ThemeProvider>

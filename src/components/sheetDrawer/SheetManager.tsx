@@ -1,10 +1,10 @@
 import { Component } from 'react'
-import { TaskDisplay } from './TaskDisplay'
-import { SheetData, columns, tasks } from '../database'
+import { TaskDisplay } from '../tasks/TaskDisplay'
+import { SheetData, columns, tasks } from '../../database'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import SheetList from './SheetList'
-import TopBarSpacer from './TopBarSpacer'
+import TopBarSpacer from '../TopBarSpacer'
 
 const MAX_SHEET_COUNT = 30
 const LOCAL_STORAGE_KEY = "MyToDO"

@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import { TagContext } from '../TagManager'
+import { TagContext } from '../../TagManager'
 import { colord } from 'colord';
 
 interface MultipleTagSelectProps {

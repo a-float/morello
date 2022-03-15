@@ -1,9 +1,9 @@
 import TagEditItem from './TagEditItem';
-import { TagContext } from '../TagManager'
+import { TagContext } from '../../TagManager'
 import Stack from '@mui/material/Stack'
 import { FunctionComponent, useState, useContext } from 'react';
 import {ColorResult, TwitterPicker } from 'react-color';
-import { TagManager } from '../TagManager'
+import { TagManager } from '../../TagManager'
 import { Dialog } from '@mui/material';
 
 type TagEditorState = {

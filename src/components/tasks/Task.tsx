@@ -7,7 +7,7 @@ import MyIcon from "./MyIcon"
 import { grey } from '@mui/material/colors';
 import { TagRow } from './TagRow'
 import { Draggable } from 'react-beautiful-dnd'
-import '../App.css'
+// import '../../App.css'
 import { useTheme } from "@mui/material/styles"
 
 const CardContentEvenPadding = styled(CardContent)(`

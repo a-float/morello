@@ -4,9 +4,9 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import EditableListItem from './EditableListItem'
-import { SheetData } from "../database"
+import { SheetData } from "../../database"
 import { Close } from '@mui/icons-material';
-import MyIcon from "./MyIcon"
+import MyIcon from "../tasks/MyIcon"
 import { grey } from "@mui/material/colors"
 
 

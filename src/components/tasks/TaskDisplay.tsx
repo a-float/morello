@@ -2,8 +2,8 @@ import { Component } from 'react'
 import { TaskColumn } from './TaskColumn'
 import { Stack } from '@mui/material'
 import { TaskData } from './Task'
-import { defaultTask, SheetData } from "../database"
-import { TaskEditor } from './TaskEditor'
+import { defaultTask, SheetData } from "../../database"
+import { TaskEditor } from '../taskEditor/TaskEditor'
 import { Add } from '@mui/icons-material'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import Fab from '@mui/material/Fab';

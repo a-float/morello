@@ -1,4 +1,4 @@
-import { TaskData } from "./components/Task"
+import { TaskData } from "./components/tasks/Task"
 
 export const defaultTask =
 {

@@ -6,8 +6,8 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import TopBarSpacer from './TopBarSpacer'
-import themes from '../themes'
+import TopBarSpacer from '../TopBarSpacer'
+import themes from '../../themes'
 import Grid from "@mui/material/Grid"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThemePreview from './ThemePreview';
