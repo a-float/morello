@@ -22,9 +22,9 @@ type settingsManagerProps = {
     onSelectTheme: (name: string) => void,
     onSetDarkMode: (dark: boolean) => void,
     isDarkMode: boolean
-    // onChangeTagColors: (name: string, color: string) => string | void,
 }
 
+// TODO rename to SettingsDrawer?
 const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
     const themePreviews = themes.map(t => <Grid item xs={6} key={t.name}>
         <ThemeProvider theme={createTheme(t.options)}>
@@ -78,7 +78,6 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
                             label="Dark mode"
                             labelPlacement="start"
                             onChange={(e: any) => {
-                                console.log(props.isDarkMode);
                                 props.onSetDarkMode(!props.isDarkMode)
                             }
                             }

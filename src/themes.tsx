@@ -145,6 +145,29 @@ const myThemes: { name: string, options: any }[] = [
                 }
             }
         }
+    },
+    {
+        name: "Office",
+        options: {
+            ...common,
+            ...{
+                palette:
+                {
+                    primary: {
+                        main: "#818181",
+                        light: "#bfbfbf",
+                        dark: "#737373"
+                    },
+                    secondary: {
+                        main: "#fafafa"
+                    },
+                    background: {
+                        default: "linear-gradient(180deg, rgba(160,160,160,1) 0%, rgba(90,90,90,1) 100%)"
+                    }
+
+                }
+            }
+        }
     }
 ]
 

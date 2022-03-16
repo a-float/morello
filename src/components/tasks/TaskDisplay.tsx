@@ -75,7 +75,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
     onDragEnd = ({ source, destination }: DropResult) => {
         // Make sure we have a valid destination
         if (destination === undefined || destination === null) return null
-
+        console.log(source, destination);
         // If the source and destination columns are the same
         // AND if the index is the same, the item isn't moving
         if (

@@ -12,14 +12,20 @@ import { SheetData, columns, tasks } from './database'
 import SheetManager from './SheetManager';
 import { TaskDisplay } from './components/tasks/TaskDisplay';
 
-const LOCAL_STORAGE_KEY = "MyToDO"
-const CURRENT_VERSION = "0.1"
+const LS_VERSION_KEY = 'version'
+const LS_SHEETS_KEY = "sheet_data"
+const LS_TAGS_KEY = "tags"
+const LS_THEME_KEY = "theme"
+const CURRENT_VERSION = "0.12"
 
 type AppState = {
 	isSheetsDrawerOpen: boolean,
 	isSettingsDrawerOpen: boolean,
+}
+
+type ThemeState = {
 	darkMode: boolean,
-	themeName: string,
+	themeName: string
 }
 
 export type SheetState = {
@@ -33,6 +39,9 @@ const App: FunctionComponent<{}> = () => {
 	const [state, setState] = useState<AppState>({
 		isSheetsDrawerOpen: false,
 		isSettingsDrawerOpen: false,
+	})
+	// TODO change default values
+	const [themeState, setThemeState] = useState<ThemeState>({
 		darkMode: false,
 		themeName: themes[0].name,
 	})
@@ -46,22 +55,40 @@ const App: FunctionComponent<{}> = () => {
 
 	useEffect(() => {
 		const storage = window.localStorage
-		const data = storage.getItem(LOCAL_STORAGE_KEY)
-		if (data !== null) {
-			const jsonData = JSON.parse(data)
-			if (jsonData.version && jsonData.version === CURRENT_VERSION) {
-				delete jsonData.version
-				setSheets(jsonData)
-			}
+		const version = storage.getItem(LS_VERSION_KEY)
+		if (!version || version !== CURRENT_VERSION) {
+			console.log("Invalid version number. Clearing the local storage.");
+			storage.clear()
+			storage.setItem(LS_VERSION_KEY, CURRENT_VERSION)
+			return
+		}
+		const sheets = storage.getItem(LS_SHEETS_KEY)
+		if (sheets !== null) {
+			setSheets(JSON.parse(sheets))
+		}
+		const tags = storage.getItem(LS_TAGS_KEY)
+		if (tags !== null) {
+			setTags(JSON.parse(tags))
+		}
+		const theme = storage.getItem(LS_THEME_KEY)
+		if (theme !== null) {
+			setThemeState(JSON.parse(theme))
 		}
 	}, [])
 
 	useEffect(() => {
-		const toSave = {...sheets, version: CURRENT_VERSION}
-		window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toSave))
-		sheetManagerRef.current.sheetState = sheets	// update managers' states
-		tagManagerRef.current.tags = tags
-	}, [sheets, tags])
+		window.localStorage.setItem(LS_SHEETS_KEY, JSON.stringify(sheets))
+		sheetManagerRef.current.sheetState = sheets	// update manager state
+	}, [sheets])
+
+	useEffect(() => {
+		window.localStorage.setItem(LS_TAGS_KEY, JSON.stringify(tags))
+		tagManagerRef.current.tags = tags // update manager state
+	}, [tags])
+
+	useEffect(() => {
+		window.localStorage.setItem(LS_THEME_KEY, JSON.stringify(themeState))
+	}, [themeState])
 
 	const removeTagFromTasks = (targetId: number) => {
 		setSheets(prevState => {
@@ -92,24 +119,25 @@ const App: FunctionComponent<{}> = () => {
 		setState({ ...state, isSettingsDrawerOpen: !state.isSettingsDrawerOpen })
 	}
 	const setTheme = (newThemeName: string) => {
-		setState({ ...state, themeName: newThemeName })
+		setThemeState(prevState => ({ ...prevState, themeName: newThemeName }))
 	}
 	const setDarkMode = (isDark: boolean) => {
-		setState({ ...state, darkMode: isDark })
+		setThemeState(prevState => ({ ...prevState, darkMode: isDark }))
 	}
 
 	// Update the theme only if the mode changes
+	// TODO does it actually make a difference?
 	const theme = useMemo(() => {
-		const options = themes.find(t => t.name === state.themeName)?.options ?? {}
-		options.palette.mode = (state.darkMode ? "dark" : "light")
+		const options = themes.find(t => t.name === themeState.themeName)?.options ?? {}
+		options.palette.mode = (themeState.darkMode ? "dark" : "light")
 		return createTheme(options)
-	}, [state.themeName, state.darkMode])
+	}, [themeState])
 
 	const currentSheetData = sheets.sheets[sheets.currentSheet]
 	return (
 		<ThemeProvider theme={theme}>
 			<TagContext.Provider value={{ tags, tagManager: tagManagerRef.current }}>
-				<Box className="App" sx={{ position: 'relative', background: theme.palette.background.default, overflowX: "hidden", height: "100vh", display: 'flex', flexDirection: 'column' }}>
+				<Box className="App" sx={{ background: theme.palette.background.default, height: "100vh", display: 'flex', flexDirection: 'column' }}>
 					<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
 						onToggleSheetDrawer={toggleSheetDrawer}
 						onToggleSettingsDrawer={toggleSettingsDrawer} />
@@ -130,10 +158,10 @@ const App: FunctionComponent<{}> = () => {
 						selectedSheet={sheets.currentSheet} />
 
 					<SettingsManager onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}
-						currentThemeName={state.themeName}
+						currentThemeName={themeState.themeName}
 						onSelectTheme={setTheme}
 						onSetDarkMode={setDarkMode}
-						isDarkMode={state.darkMode} />
+						isDarkMode={themeState.darkMode} />
 				</Box >
 			</TagContext.Provider>
 		</ThemeProvider>
