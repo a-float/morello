@@ -8,7 +8,8 @@ import styled from "@mui/material/styles/styled";
 import { colord, extend } from 'colord'
 import mixPlugin from "colord/plugins/mix";
 import { Delete, MoreHoriz } from "@mui/icons-material";
-import { MenuItem, MenuList } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import MyIcon from '../MyIcon'
 
 extend([mixPlugin]);
@@ -50,7 +51,7 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
                     onChange={event => props.onChangeName(props.tag.id, event.target.value)}
                     sx={{ marginRight: "20px" }} />
                 <StyledButton variant="contained" onClick={event => props.onOpenPicker(event.target, props.tag)}
-                    sx={{ backgroundColor: props.tag.color, minHeight: "1.5em", maxWidth: "2.2em", margin: "0px 10px" }}>
+                    sx={{ backgroundColor: props.tag.color, minHeight: "1.7em", maxWidth: "2em", margin: "0px 20px 0px 10px" }}>
                 </StyledButton>
                 <MyIcon color="#aaaaaa" hoverColor="#666666" onClick={openMenu}>
                     <MoreHoriz />
@@ -61,7 +62,12 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={() => setAnchorEl(null)}>
-                <MenuItem onClick={(event) => { setAnchorEl(null); props.onDelete(props.tag.id); }}>Delete</MenuItem>
+                <MenuItem dense={true} onClick={(event) => { setAnchorEl(null); props.onDelete(props.tag.id); }}>
+                    Delete
+                    <ListItemIcon>
+                        <Delete />
+                    </ListItemIcon>
+                </MenuItem>
             </Menu>
         </>
     )

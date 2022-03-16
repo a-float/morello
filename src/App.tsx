@@ -58,30 +58,27 @@ const App: FunctionComponent<{}> = () => {
 		tagManagerRef.current.tags = tags
 	}, [sheets, tags])
 
-	// const handleRenameTag = (from: string, to: string) => {
-	// 	setSheets(prevState => {
-	// 		console.log(prevState);
-	// 		const copy: { [key: string]: SheetData } = {}
-	// 		for (const sheetName of [...Object.keys(prevState.sheets)]) {
-	// 			copy[sheetName] = {
-	// 				columns: [...prevState.sheets[sheetName].columns],
-	// 				tasks: [...prevState.sheets[sheetName].tasks]
-	// 			}
-	// 			for (const task of copy[sheetName].tasks) {
-	// 				task.tagIds = task.tagIds.map(tag => tag === from ? to : tag)
-	// 			}
-	// 		}
-	// 		return ({
-	// 			currentSheet: prevState.currentSheet,
-	// 			sheets: copy
-	// 		})
-	// 	})
-	// }
-	const handleRefreshTaskTags = () => {
-		console.log("Done");
+	const removeTagFromTasks = (targetId: number) => {
+		setSheets(prevState => {
+			console.log(prevState);
+			const copy: { [key: string]: SheetData } = {}
+			for (const sheetName of [...Object.keys(prevState.sheets)]) {
+				copy[sheetName] = {
+					columns: [...prevState.sheets[sheetName].columns],
+					tasks: [...prevState.sheets[sheetName].tasks]
+				}
+				for (const task of copy[sheetName].tasks) {
+					task.tagIds = task.tagIds.filter(tag => tag !== targetId)
+				}
+			}
+			return ({
+				currentSheet: prevState.currentSheet,
+				sheets: copy
+			})
+		})
 	}
 
-	const tagManagerRef = useRef<TagManager>(new TagManager(tags, setTags, handleRefreshTaskTags))
+	const tagManagerRef = useRef<TagManager>(new TagManager(tags, setTags, removeTagFromTasks))
 
 	const toggleSheetDrawer = (toggle: boolean) => {
 		setState({ ...state, isSheetsDrawerOpen: toggle })

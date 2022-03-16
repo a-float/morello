@@ -20,12 +20,12 @@ class TagManager {
 
     tags: Tag[]
     setTags: React.Dispatch<React.SetStateAction<Tag[]>>
-    refreshTasks: () => void
+    removeTagFromTasks: (idToRemove: number) => void
 
-    constructor(tags: Tag[], setTags: any, refreshTasks: () => void) {
+    constructor(tags: Tag[], setTags: any, refreshTasks: (idToRemove: number) => void) {
         this.tags = tags
         this.setTags = setTags
-        this.refreshTasks = refreshTasks
+        this.removeTagFromTasks = refreshTasks
     }
 
     getAllTags() {
@@ -65,6 +65,7 @@ class TagManager {
         console.log("hemlo :>");
         console.log(this.setTags, id);
         this.setTags(prevState => [...prevState.filter(tag => tag.id !== id)])
+        this.removeTagFromTasks(id)
     }
 
     renameTag(id: number, newName: string) {

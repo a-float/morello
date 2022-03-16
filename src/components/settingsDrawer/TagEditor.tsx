@@ -17,11 +17,11 @@ const TagEditor: FunctionComponent<{}> = (props) => {
         setState({ editedTag: tag, anchor: event.currentTarget })
     }
 
-    const { tags, tagManager } = useContext(TagContext)
+    const {tagManager } = useContext(TagContext)
     return (
         <>
             <Stack spacing={3}>
-                {tags.map(tag => (
+                {tagManager.getTags().map(tag => (
                     <TagEditItem key={tag.id}
                         tag={tag}
                         onOpenPicker={handleOpenPicker}
