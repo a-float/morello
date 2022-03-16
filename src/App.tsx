@@ -13,6 +13,7 @@ import SheetManager from './SheetManager';
 import { TaskDisplay } from './components/tasks/TaskDisplay';
 
 const LOCAL_STORAGE_KEY = "MyToDO"
+const CURRENT_VERSION = "0.1"
 
 type AppState = {
 	isSheetsDrawerOpen: boolean,
@@ -47,13 +48,17 @@ const App: FunctionComponent<{}> = () => {
 		const storage = window.localStorage
 		const data = storage.getItem(LOCAL_STORAGE_KEY)
 		if (data !== null) {
-			const json = JSON.parse(data)
-			setSheets(json)
+			const jsonData = JSON.parse(data)
+			if (jsonData.version && jsonData.version === CURRENT_VERSION) {
+				delete jsonData.version
+				setSheets(jsonData)
+			}
 		}
 	}, [])
 
 	useEffect(() => {
-		window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sheets))
+		const toSave = {...sheets, version: CURRENT_VERSION}
+		window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toSave))
 		sheetManagerRef.current.sheetState = sheets	// update managers' states
 		tagManagerRef.current.tags = tags
 	}, [sheets, tags])
