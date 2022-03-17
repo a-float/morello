@@ -10,13 +10,13 @@ import { createTheme } from "@mui/material";
 import { TagManager, TagContext, Tag } from './TagManager';
 import { SheetData, columns, tasks } from './database'
 import SheetManager from './SheetManager';
-import { TaskDisplay } from './components/tasks/TaskDisplay';
+import TaskDisplay from './components/tasks/TaskDisplay';
 
 const LS_VERSION_KEY = 'version'
 const LS_SHEETS_KEY = "sheet_data"
 const LS_TAGS_KEY = "tags"
 const LS_THEME_KEY = "theme"
-const CURRENT_VERSION = "0.12"
+const CURRENT_VERSION = "0.123"
 
 type AppState = {
 	isSheetsDrawerOpen: boolean,
@@ -84,6 +84,7 @@ const App: FunctionComponent<{}> = () => {
 	useEffect(() => {
 		window.localStorage.setItem(LS_TAGS_KEY, JSON.stringify(tags))
 		tagManagerRef.current.tags = tags // update manager state
+		console.log("Tags are ", tags);
 	}, [tags])
 
 	useEffect(() => {

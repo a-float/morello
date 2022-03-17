@@ -35,6 +35,7 @@ export default class SheetManager {
     }
 
     renameSheet = (oldName: string, newName: string) => {
+        if (oldName === newName) return
         this.setSheetState(prevState => {
             const newSheets = {};
             delete Object.assign(newSheets, prevState.sheets, { [newName]: prevState.sheets[oldName] })[oldName];
@@ -46,7 +47,7 @@ export default class SheetManager {
     }
 
     selectSheet = (sheetName: string) => {
-        console.log(this.sheetState);
+        if (this.sheetState.currentSheet === sheetName) return // don't rerender on reselect
         if (this.sheetState.sheets.hasOwnProperty(sheetName)) {
             this.setSheetState(prevState => ({ ...prevState, currentSheet: sheetName }))
         } else {    // TODO is it necessary?

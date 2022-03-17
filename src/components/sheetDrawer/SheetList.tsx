@@ -5,7 +5,6 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import EditableListItem from './EditableListItem'
 import { Close } from '@mui/icons-material';
-import MyIcon from "../MyIcon"
 import { grey } from "@mui/material/colors"
 
 
@@ -21,11 +20,12 @@ type SheetListProps = {
 
 const SheetList: FunctionComponent<SheetListProps> = (props) => {
     const sheetListItems = props.sheets.sort().map(sheetName =>
-        <ListItem disablePadding key={sheetName} secondaryAction={
-            <MyIcon color={grey[500]} hoverColor={grey[900]} onClick={(event) => props.onDeleteSheet(sheetName)}>
-                <Close fontSize="inherit" />
-            </MyIcon>
-        }>
+        // can't remove the last sheet
+        <ListItem disablePadding key={sheetName} {...(props.sheets.length === 1 ? {} : {
+            secondaryAction:
+                <Close onClick={(event) => props.onDeleteSheet(sheetName)}
+                    sx={{ color: grey[500], "&:hover": { color: grey[900] } }} fontSize="inherit" />
+        })}>
             <EditableListItem
                 selected={sheetName === props.selectedSheet}
                 onSelectSheet={props.onSelectSheet}

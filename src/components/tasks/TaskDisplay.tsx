@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { FunctionComponent, useState, useRef } from 'react'
 import { TaskColumn } from './TaskColumn'
 import { Stack } from '@mui/material'
 import { TaskData } from './Task'
@@ -24,55 +24,63 @@ interface TaskDisplayState {
     isEditorOpen: boolean
 }
 
-export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
-    state: TaskDisplayState = {
+const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
+    const [state, setState] = useState<TaskDisplayState>({
         editedTaskData: null,
         isEditorOpen: false
-    }
+    })
+    const scrollRef = useRef<HTMLElement | null>(null)
 
-    addNewTask = (columnName: string) => {
+    // useEffect(() => {
+    //     if(scrollRef.current){
+    //         console.log("scrollin");
+    //         scrollRef.current.scrollTo(scrollRef.current.scrollWidth, 0)
+    //     }
+    // }, [len])
+
+    const addNewTask = (columnName: string) => {
         // TODO make sure no two ids are the same
         const id = Math.floor(Math.random() * 100000).toString()
-        const newTask = { ...defaultTask, columnId: this.props.columns.indexOf(columnName), id }
-        this.openEditor(newTask)
+        const newTask = { ...defaultTask, columnId: props.columns.indexOf(columnName), id }
+        openEditor(newTask)
     }
 
-    deleteTask = (id: string) => {
-        const newTasks = [...this.props.tasks.filter(task => task.id !== id)]
-        this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
+    const deleteTask = (id: string) => {
+        const newTasks = [...props.tasks.filter(task => task.id !== id)]
+        props.onModifySheet({ tasks: newTasks, columns: [...props.columns] })
     }
 
-    private getTaskById = (id: string) => {
-        const task = this.props.tasks.find(task => task.id === id)
+    const getTaskById = (id: string) => {
+        const task = props.tasks.find(task => task.id === id)
         return task ? task : null
     }
 
-    startTaskEdit = (id: string) => {
-        const taskData = this.getTaskById(id)
-        if (taskData !== null) this.openEditor(taskData)
+    const startTaskEdit = (id: string) => {
+        const taskData = getTaskById(id)
+        if (taskData !== null) openEditor(taskData)
     }
 
-    private openEditor = (data: TaskData) => {
-        this.setState(prevState => ({ ...prevState, editedTaskData: data, isEditorOpen: true }))
+    const openEditor = (data: TaskData) => {
+        setState(prevState => ({ ...prevState, editedTaskData: data, isEditorOpen: true }))
     }
 
-    private updateTask = (updatedTask: TaskData) => {
-        let taskIdx = this.props.tasks.findIndex(task => task.id === updatedTask.id)
-        if (taskIdx === -1) taskIdx = this.props.tasks.length;
+    const updateTask = (updatedTask: TaskData) => {
+        let taskIdx = props.tasks.findIndex(task => task.id === updatedTask.id)
+        if (taskIdx === -1) taskIdx = props.tasks.length;
         const newTasks = [
-            ...this.props.tasks.slice(0, taskIdx),
+            ...props.tasks.slice(0, taskIdx),
             { ...updatedTask },
-            ...this.props.tasks.slice(taskIdx + 1)
+            ...props.tasks.slice(taskIdx + 1)
         ]
-        this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
+        props.onModifySheet({ tasks: newTasks, columns: [...props.columns] })
     }
 
-    onEndTaskEdit = (data: TaskData | null) => {
-        if (data) this.updateTask(data)
-        this.setState(prevState => ({ ...prevState, isEditorOpen: false }))
+    const onEndTaskEdit = (data: TaskData | null) => {
+        if (data) updateTask(data)
+        setState(prevState => ({ ...prevState, isEditorOpen: false }))
     }
 
-    onDragEnd = ({ source, destination }: DropResult) => {
+    const onDragEnd = ({ source, destination }: DropResult) => {
         // Make sure we have a valid destination
         if (destination === undefined || destination === null) return null
         console.log(source, destination);
@@ -87,15 +95,15 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
         // Set start and end variables
         const startColName = source.droppableId.split('-').slice(1).join('')
         const endColName = destination.droppableId.split('-').slice(1).join('')
-        const start = this.props.columns.findIndex(col => col === startColName)
-        const end = this.props.columns.findIndex(col => col === endColName)
+        const start = props.columns.findIndex(col => col === startColName)
+        const end = props.columns.findIndex(col => col === endColName)
 
         // If start is the same as end, we're in the same column
         if (start === end) {
             const newTasks = []
             let foundCount = 0
-            let taskToMove: TaskData = this.props.tasks[0] // temporary value
-            for (let task of this.props.tasks) {
+            let taskToMove: TaskData = props.tasks[0] // temporary value
+            for (let task of props.tasks) {
                 if (task.columnId === start) {
                     if (foundCount === source.index) {
                         taskToMove = task
@@ -105,7 +113,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                 }
             }
             foundCount = 0
-            for (let task of this.props.tasks) {
+            for (let task of props.tasks) {
                 if (task.columnId === start) {
                     if (foundCount === destination.index) {
                         newTasks.push(taskToMove)
@@ -120,14 +128,14 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             }
             if (foundCount <= destination.index) newTasks.push(taskToMove)
 
-            this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
+            props.onModifySheet({ tasks: newTasks, columns: [...props.columns] })
             return null
         }
         else { // different columns
             const newTasks = []
             let foundCount = 0
-            let taskToMove: TaskData = this.props.tasks[0] // temporary value
-            for (let task of this.props.tasks) {
+            let taskToMove: TaskData = props.tasks[0] // temporary value
+            for (let task of props.tasks) {
                 if (task.columnId === start) {
                     if (foundCount === source.index) {
                         taskToMove = task
@@ -139,7 +147,7 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
             taskToMove.columnId = end
             foundCount = 0
             // console.log(destination.index)
-            for (let task of this.props.tasks) {
+            for (let task of props.tasks) {
                 if (task.id === taskToMove.id) continue
                 if (task.columnId === end) {
                     if (foundCount === destination.index) {
@@ -154,99 +162,108 @@ export class TaskDisplay extends Component<TaskDisplayProps, TaskDisplayState>{
                 }
             }
             if (foundCount <= destination.index) newTasks.push(taskToMove)
-            this.props.onModifySheet({ tasks: newTasks, columns: [...this.props.columns] })
+            props.onModifySheet({ tasks: newTasks, columns: [...props.columns] })
         }
         return null
     }
 
-    addNewColumn = () => {
-        let columnCount = this.props.columns.length + 1
+    const addNewColumn = () => {
+        let columnCount = props.columns.length + 1
         let newName = (x: number) => "Column " + x
-        while (this.props.columns.includes(newName(columnCount))) {
+        while (props.columns.includes(newName(columnCount))) {
             columnCount += 1
         }
-        const newColumns = [...this.props.columns, newName(columnCount)]
-        this.props.onModifySheet({ tasks: [...this.props.tasks], columns: newColumns })
+        const newColumns = [...props.columns, newName(columnCount)]
+        props.onModifySheet({ tasks: [...props.tasks], columns: newColumns })
+        // TODO hacky scroll
+        // i want to scroll to the right end of the container but only when a new column is added
+        // using useEffect dependant on the props.columns.length, the scroll occurs also when a column is removed
+        setTimeout(() => {
+            if (scrollRef.current) {
+                scrollRef.current.scrollTo(scrollRef.current.scrollWidth, 0)
+            }
+        }, 100)
     }
 
-    changeColumnName = (oldName: string, newName: string) => {
-        if (this.props.columns.includes(newName)) {
+    const changeColumnName = (oldName: string, newName: string) => {
+        if (props.columns.includes(newName)) {
             console.log(`'${newName}' is already taken`)
             return
         }
-        const colIdx = this.props.columns.indexOf(oldName)
+        const colIdx = props.columns.indexOf(oldName)
         if (colIdx === -1) {
             console.log(`Internal Error: Invalid oldName: '${oldName}'`)
             return
         }
         const newColumns = [
-            ...this.props.columns.slice(0, colIdx),
+            ...props.columns.slice(0, colIdx),
             newName,
-            ...this.props.columns.slice(colIdx + 1)
+            ...props.columns.slice(colIdx + 1)
         ]
-        this.props.onModifySheet({ tasks: [...this.props.tasks], columns: newColumns })
+        props.onModifySheet({ tasks: [...props.tasks], columns: newColumns })
     }
 
-    deleteColumn = (columnName: string) => {
-        const colIdx = this.props.columns.indexOf(columnName)
+    const deleteColumn = (columnName: string) => {
+        const colIdx = props.columns.indexOf(columnName)
         if (colIdx === -1) {
             console.error('No column with name: ' + columnName)
             return
         } else {
             const newDataSheet = {
-                columns: this.props.columns.filter((col, i) => i !== colIdx),
-                tasks: this.props.tasks.filter(task => task.columnId !== colIdx)
+                columns: props.columns.filter((col, i) => i !== colIdx),
+                tasks: props.tasks.filter(task => task.columnId !== colIdx)
             }
-            this.props.onModifySheet(newDataSheet)
+            props.onModifySheet(newDataSheet)
         }
     }
 
-    render() {
-        const gridColumns = [...Array(this.props.columns.length).keys()].map(colIdx =>
-            <TaskColumn
-                key={this.props.columns[colIdx]}
-                onAddNewTask={this.addNewTask}
-                onDeleteTask={this.deleteTask}
-                onStartTaskEdit={this.startTaskEdit}
-                onNameChange={this.changeColumnName}
-                onDeleteColumn={this.deleteColumn}
-                name={this.props.columns[colIdx]}
-                tasks={this.props.tasks.filter(task => task.columnId === colIdx)}
-            />
-        )
-        return (
-            <>
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    <Stack direction='row' spacing="20px" sx={{
-                        boxSizing: "border-box", height: "100%", padding: "20px", overflowX: 'auto', overflowY: 'auto',
-                        width: `calc(100% - ${this.props.widthOffsets.left + this.props.widthOffsets.right})`,
-                        marginLeft: `${this.props.widthOffsets.left}px`,
-                        marginRight: `${this.props.widthOffsets.right}px`,
-                        transition: (theme) => theme.transitions.create(['margin', 'width'], {
-                            ...(this.props.widthOffsets.left === 0 ?
-                                {
-                                    easing: theme.transitions.easing.sharp,
-                                    duration: theme.transitions.duration.leavingScreen
-                                } :
-                                {
-                                    easing: theme.transitions.easing.easeOut,
-                                    duration: theme.transitions.duration.enteringScreen
-                                })
-                        })
-                    }}>
-                        {gridColumns}
-                    </Stack>
-                </DragDropContext>
-                <TaskEditor
-                    isOpen={this.state.isEditorOpen}
-                    taskData={this.state.editedTaskData}
-                    onEndEdit={this.onEndTaskEdit} />
-                <Fab variant="circular" aria-label="add_column" onClick={this.addNewColumn}
-                    color="inherit"
-                    sx={{ position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
-                    <Add color="primary" />
-                </Fab>
-            </>
-        )
-    }
+    const gridColumns = [...Array(props.columns.length).keys()].map(colIdx =>
+        <TaskColumn
+            key={props.columns[colIdx]}
+            onAddNewTask={addNewTask}
+            onDeleteTask={deleteTask}
+            onStartTaskEdit={startTaskEdit}
+            onNameChange={changeColumnName}
+            onDeleteColumn={deleteColumn}
+            name={props.columns[colIdx]}
+            tasks={props.tasks.filter(task => task.columnId === colIdx)}
+        />)
+    return (
+        <>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Stack ref={scrollRef} direction='row' spacing="20px" sx={{
+                    boxSizing: "border-box", height: "100%", padding: "20px", overflowX: 'auto', overflowY: 'auto',
+                    width: `calc(100% - ${props.widthOffsets.left + props.widthOffsets.right})`,
+                    marginLeft: `${props.widthOffsets.left}px`,
+                    marginRight: `${props.widthOffsets.right}px`,
+                    transition: (theme) => theme.transitions.create(['margin', 'width'], {
+                        ...(props.widthOffsets.left === 0 ?
+                            {
+                                easing: theme.transitions.easing.sharp,
+                                duration: theme.transitions.duration.leavingScreen
+                            } :
+                            {
+                                easing: theme.transitions.easing.easeOut,
+                                duration: theme.transitions.duration.enteringScreen
+                            })
+                    })
+                }}>
+                    {gridColumns}
+                </Stack>
+            </DragDropContext>
+            <TaskEditor
+                isOpen={state.isEditorOpen}
+                taskData={state.editedTaskData}
+                onEndEdit={onEndTaskEdit} />
+            <Fab variant="circular" aria-label="add column" onClick={() => {
+                addNewColumn();
+            }}
+                color="inherit"
+                sx={{ position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
+                <Add color="primary" />
+            </Fab>
+        </>
+    )
 }
+
+export default TaskDisplay

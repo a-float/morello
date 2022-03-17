@@ -10,7 +10,7 @@ class TagManager {
     static defaultTag = { name: "Default", color: '#bababa' }
     static newTagColor = "#ff00ff"
     static defaultTags = [
-        { id: 0, ...TagManager.defaultTag },
+        // { id: 0, ...TagManager.defaultTag },
         { id: 1, name: "Chill", color: "#90EE90" },            //lightgreen
         { id: 2, name: "Important", color: "#FFD700" },        //gold
         { id: 3, name: "VeryImportant", color: "#FA8072" },    //salmon
@@ -28,20 +28,20 @@ class TagManager {
         this.removeTagFromTasks = refreshTasks
     }
 
-    getAllTags() {
-        return [...this.tags]
-    }
+    // getAllTags() {
+    //     return [...this.tags]
+    // }
 
-    getTags() {
-        return this.tags.filter(tag => tag.name !== TagManager.defaultTag.name)
-    }
+    // getTags() {
+    //     return this.tags.filter(tag => tag.name !== TagManager.defaultTag.name)
+    // }
 
     reset() {
         this.setTags(TagManager.defaultTags)
     }
 
     getTag(id: number) {
-        return this.getAllTags().find(x => x.id === id)
+        return this.tags.find(x => x.id === id)
     }
 
     generateTagId() {
@@ -72,8 +72,8 @@ class TagManager {
         console.log(id, newName);
         const tag = this.getTag(id)
         if (!tag) return `Tag doesn't exist`
-        if (tag.name === TagManager.defaultTag.name) return "Can not modify the default tag"
-        if (newName === TagManager.defaultTag.name) return "Can not override the default tag"
+        // if (tag.name === TagManager.defaultTag.name) return "Can not modify the default tag"
+        // if (newName === TagManager.defaultTag.name) return "Can not override the default tag"
         if (this.getTagByName(newName)) return `Tag "${newName}" already exists`
         this.setTags([...this.tags.map(tag => tag.id !== id ? tag : { ...tag, name: newName })])
         return null
@@ -83,11 +83,12 @@ class TagManager {
         const tag = this.getTag(id)
         if (!tag) return `Tag ${id} does not exist`
         this.setTags(prevState => [...prevState.map(tag => tag.id !== id ? tag : { ...tag, color: newColor })])
+        console.log("Changed");
         return null
     }
 
     getColor(id: number) {
-        return this.getTag(id)?.color || this.tags[0].color // Default tag
+        return this.getTag(id)?.color || TagManager.defaultTag.color // Default tag
     }
 
     getTagByName(name: string) {

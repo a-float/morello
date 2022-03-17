@@ -14,7 +14,7 @@ interface MultipleTagSelectProps {
 }
 
 export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (props) => {
-  const {tagManager } = useContext(TagContext)
+  const {tags, tagManager } = useContext(TagContext)
   const getTextColor = (id: number) => {
     const bgColor = tagManager.getColor(id)
     return colord(bgColor).toHsl().l < 50 ? "#fafafa" : "#131313"
@@ -37,7 +37,7 @@ export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (pro
           )}
         >
 
-          {tagManager.getTags().map(tag => (
+          {tags.map(tag => (
             <MenuItem
               key={tag.id}
               value={tag.id}

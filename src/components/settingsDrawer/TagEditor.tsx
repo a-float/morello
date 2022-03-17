@@ -17,11 +17,11 @@ const TagEditor: FunctionComponent<{}> = (props) => {
         setState({ editedTag: tag, anchor: event.currentTarget })
     }
 
-    const {tagManager } = useContext(TagContext)
+    const {tags, tagManager } = useContext(TagContext)
     return (
         <>
             <Stack spacing={3}>
-                {tagManager.getTags().map(tag => (
+                {tags.map(tag => (
                     <TagEditItem key={tag.id}
                         tag={tag}
                         onOpenPicker={handleOpenPicker}
@@ -46,7 +46,7 @@ const TagEditor: FunctionComponent<{}> = (props) => {
             >
                 <TwitterPicker
                     color={state.editedTag?.color || 'red'}
-                    onChangeComplete={colorRes => tagManager.setTagColor(state.editedTag!.id, colorRes.hex)} // TODO bad exclamation mark
+                    onChangeComplete={colorRes => {tagManager.setTagColor(state.editedTag!.id, colorRes.hex); setState({anchor: null, editedTag: null})}} // TODO bad exclamation mark
                 />
             </Dialog>
         </>)

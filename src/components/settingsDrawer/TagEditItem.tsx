@@ -24,7 +24,7 @@ type TagEditItemProps = {
 // TODO create one shared Popover for all tag items?
 const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
     const darkerTone = colord(props.tag.color).shades(10)[1].toHex()
-    const [anchorEl, setAnchorEl] = useState<null | any>(null)
+    const [anchorEl, setAnchorEl] = useState<null | any>(null) // TODO bad any
     const open = Boolean(anchorEl)
     const openMenu = (event: React.MouseEvent<any>) => {
         setAnchorEl(event.currentTarget)
@@ -63,10 +63,10 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
                 open={open}
                 onClose={() => setAnchorEl(null)}>
                 <MenuItem dense={true} onClick={(event) => { setAnchorEl(null); props.onDelete(props.tag.id); }}>
-                    Delete
                     <ListItemIcon>
                         <Delete />
                     </ListItemIcon>
+                    Delete
                 </MenuItem>
             </Menu>
         </>

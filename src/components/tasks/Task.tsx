@@ -1,13 +1,14 @@
-import { Card, CardContent, Stack, Typography } from '@mui/material'
+import { Card, CardContent, Typography } from '@mui/material'
 import { FunctionComponent, useState } from 'react'
 import { styled } from '@mui/material/styles'
-import { Edit, Close } from '@mui/icons-material';
-// import EditableTaskContent from "./EditableTaskContent"
-import MyIcon from "../MyIcon"
+import { Edit, Delete, MoreHoriz } from "@mui/icons-material";
 import { grey } from '@mui/material/colors';
 import { TagRow } from './TagRow'
 import { Draggable } from 'react-beautiful-dnd'
 // import '../../App.css'
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Menu from "@mui/material/Menu";
 import { useTheme } from "@mui/material/styles"
 
 const CardContentEvenPadding = styled(CardContent)(`
@@ -34,49 +35,72 @@ export type TaskProps = {
 } & TaskData
 
 export const Task: FunctionComponent<TaskProps> = (props) => {
-    const [state, setState] = useState({ showBar: false })
+    const [menuAnchor, setMenuAnchor] = useState(null)
     const startEdit = () => props.onStartEdit(props.id)
+    const openMenu = (event: React.MouseEvent<any>) => {
+        setMenuAnchor(event.currentTarget)
+    }
     const theme = useTheme()
     return (
-        <Draggable draggableId={props.id} index={props.index}>
-            {(provided, snapshot) => (
-                <Card
-                    elevation={0}
-                    onMouseEnter={() => { setState(prevState => ({ ...prevState, showBar: true })) }}
-                    onMouseLeave={() => { setState(prevState => ({ ...prevState, showBar: false })) }}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    sx={{
-                        position: "relative",
-                        marginBottom: '0.5em',
-                        padding: '0.6em 0.6em',
-                        border: snapshot.isDragging ? `solid 3px ${theme.palette.primary.main}` : "none",
-                    }}
-                >
-                    {state.showBar &&
-                        <Stack position="absolute" right="0px" top="0.2em" direction="row" alignItems="center" justifyContent="flex-end">
-                            {/* id={props.id}&nbsp;index={props.index}&nbsp; */}
-                            <MyIcon color={grey[500]} hoverColor={grey[900]} onClick={startEdit}>
-                                <Edit fontSize="inherit" />
-                            </MyIcon>
-                            <MyIcon color={grey[500]} hoverColor={grey[900]}>
-                                <Close fontSize="inherit" onClick={() => props.onDeleteTask(props.id)} />
-                            </MyIcon>
-                        </Stack>
-                    }
-                    <CardContentEvenPadding onDoubleClick={startEdit}>
-                        <TagRow tags={props.tagIds} />
-                        <Typography variant='subtitle1' sx={{ lineHeight: '1.25' }} component="div">
-                            {props.name}
-                        </Typography>
-                        {props.descr && <Typography variant='body2' sx={{ whiteSpace: "pre-line", marginTop: "0.3em", lineHeight: '1.25', color: grey[500] }} component="div">
-                            {props.descr}
-                        </Typography>}
-                    </CardContentEvenPadding>
-                </Card >
-            )
-            }
-        </Draggable >
+        <>
+            <Draggable draggableId={props.id} index={props.index}>
+                {(provided, snapshot) => (
+                    <Card
+                        elevation={0}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        sx={{
+                            position: "relative",
+                            marginBottom: '0.5em',
+                            padding: '0.6em 0.6em',
+                            border: snapshot.isDragging ? `solid 3px ${theme.palette.primary.main}` : "none",
+                        }}
+                    >
+                        {/* <MyIcon color="#aaaaaa" hoverColor="#666666" onClick={openMenu} */}
+                        {/* sx={{ position: "absolute", right: "0.2em", top: "0em" }}> */}
+                        <MoreHoriz onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.3em", top: "0em" }} />
+                        {/* </MyIcon> */}
+                        <CardContentEvenPadding onDoubleClick={startEdit}>
+                            <TagRow tags={props.tagIds} />
+                            <Typography variant='subtitle1' sx={{ lineHeight: '1.25' }} component="div">
+                                {props.name}
+                            </Typography>
+                            {props.descr && <Typography variant='body2' sx={{ whiteSpace: "pre-line", marginTop: "0.3em", lineHeight: '1.25', color: grey[500] }} component="div">
+                                {props.descr}
+                            </Typography>}
+                        </CardContentEvenPadding>
+                    </Card >
+                )
+                }
+            </Draggable >
+            <Menu
+                id="delete-tag-menu"
+                anchorEl={menuAnchor}
+                open={Boolean(menuAnchor)}
+                onClose={() => setMenuAnchor(null)}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); props.onStartEdit(props.id); }}>
+                    <ListItemIcon>
+                        <Edit />
+                    </ListItemIcon>
+                    Edit
+                </MenuItem>
+                <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); props.onDeleteTask(props.id); }}>
+                    <ListItemIcon>
+                        <Delete />
+                    </ListItemIcon>
+                    Delete
+                </MenuItem>
+            </Menu>
+        </>
     )
 }

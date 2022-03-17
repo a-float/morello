@@ -1,10 +1,12 @@
-import { Close, Edit, Add } from '@mui/icons-material'
 import { Button, Stack, Typography, TextField, Box, useTheme } from '@mui/material'
 import { FunctionComponent, useState } from 'react'
-import MyIcon from '../MyIcon'
 import { Task, TaskData } from './Task'
-import { grey } from '@mui/material/colors'
 import { Droppable } from 'react-beautiful-dnd'
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Menu from "@mui/material/Menu";
+import { Add, Edit, Delete, MoreHoriz } from "@mui/icons-material";
+import { grey } from "@mui/material/colors"
 
 export interface TaskColumnData {
     name: string,
@@ -20,7 +22,14 @@ export type TaskColumnProps = {
 
 export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
     // TODO make column name edition similar to EditableListItem one!
-    const [state, setState] = useState({ editable: false, name: props.name, showBar: false })
+    const [state, setState] = useState({ editable: false, name: props.name })
+    const [menuAnchor, setMenuAnchor] = useState(null)
+
+    const onChangeName = (event: any) => {
+        event.preventDefault()
+        setState(prevState => ({ ...prevState, editable: false }))
+        props.onNameChange(props.name, state.name)
+    }
     const tasks = props.tasks.map((taskData, index) =>
         <Task
             index={index}
@@ -29,36 +38,23 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
             onStartEdit={props.onStartTaskEdit}
             onDeleteTask={(id) => { props.onDeleteTask(id, props.name) }} />
     )
+    const openMenu = (event: React.MouseEvent<any>) => {
+        setMenuAnchor(event.currentTarget)
+    }
+    // TODO hardcoded values?
     const bgColor = useTheme().palette.mode === 'dark' ? 'rgba(30,30,30, .7)' : 'rgba(255, 255, 255, .6)'
     return (
-        <Stack spacing={1} sx={{ borderRadius: "4px", width: '30%', minWidth: '200px', maxWidth: "280px", minHeight: "30px", padding: '0.6em', backgroundColor: bgColor, height: "fit-content" }}>
+        <Stack spacing={1} sx={{ position: 'relative', borderRadius: "4px", width: '30%', minWidth: '200px', maxWidth: "280px", minHeight: "30px", padding: '0.6em', backgroundColor: bgColor, height: "fit-content" }}>
             <Box
-                sx={{ position: 'relative' }}
-                onDoubleClick={() => { setState(prevState => ({ ...prevState, showBar: false, editable: true })) }}
-                // do not display the option bar, while title is editable
-                onMouseEnter={() => { !state.editable && setState(prevState => ({ ...prevState, showBar: true })) }}
-                onMouseLeave={() => { !state.editable && setState(prevState => ({ ...prevState, showBar: false })) }}
-            >
-                {state.showBar &&
-                    <Stack position="absolute" right="-0.1em" top="-0.1em" direction="row" alignItems="center" justifyContent="flex-end">
-                        <MyIcon color={grey[500]} hoverColor={grey[900]}
-                            onClick={() => setState(prevState => ({ ...prevState, editable: true, showBar: false }))}>
-                            <Edit fontSize="inherit" />
-                        </MyIcon>
-                        <MyIcon color={grey[500]} hoverColor={grey[900]}
-                            onClick={() => props.onDeleteColumn(props.name)}>
-                            <Close fontSize="inherit" />
-                        </MyIcon>
-                    </Stack>
-                }
+                onDoubleClick={() => { setState(prevState => ({ ...prevState, editable: true })) }}>
+
                 {!state.editable ?
-                    <Typography align="center" variant='h5' sx={{ color: 'text.primary' }}>{props.name}</Typography>
+                    <>
+                        <Typography align="center" variant='h5' sx={{ color: 'text.primary' }}>{props.name}</Typography>
+                        <MoreHoriz onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.3em", top: "0em" }} />
+                    </>
                     :
-                    <form onSubmit={(event) => {
-                        event.preventDefault()
-                        setState(prevState => ({ ...prevState, editable: false }))
-                        props.onNameChange(props.name, state.name)
-                    }}>
+                    <form onSubmit={onChangeName}>
                         <Stack direction='row' sx={{ justifyContent: "space-between", alignItems: "flex-end" }}>
                             <TextField
                                 autoFocus
@@ -70,9 +66,8 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                                     setState(prevState => ({ ...prevState, name: event.target.value }))
                                 }}
                             />
-                            <Button type='submit'>Save</Button>
+                            <Button onMouseDown={onChangeName}>Save</Button>
                         </Stack>
-
                     </form>
                 }
             </Box>
@@ -92,6 +87,34 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                 onClick={() => props.onAddNewTask(props.name)}>
                 Add new task
             </Button>
+            {/* TODO this and tasks menus are the same. Move to another component? Maybe use the extension from fireship */}
+            <Menu
+                id="delete-tag-menu"
+                anchorEl={menuAnchor}
+                open={Boolean(menuAnchor)}
+                onClose={() => setMenuAnchor(null)}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); setState(prevState => ({ ...prevState, editable: true })); }}>
+                    <ListItemIcon>
+                        <Edit />
+                    </ListItemIcon>
+                    Edit
+                </MenuItem>
+                <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); props.onDeleteColumn(props.name); }}>
+                    <ListItemIcon>
+                        <Delete />
+                    </ListItemIcon>
+                    Delete
+                </MenuItem>
+            </Menu>
         </Stack>
 
 
