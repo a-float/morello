@@ -39,15 +39,15 @@ const myThemes: { name: string, options: any }[] = [
                 palette:
                 {
                     primary: {
-                        main: "#d32f2f",
-                        light: "#ef5350",
-                        dark: "#c62828"
+                        main: "#dc3a3c",
+                        light: "#ef473a",
+                        dark: "#cb2d3e"
                     },
                     secondary: {
                         main: "#fafafa"
                     },
                     background: {
-                        default: "linear-gradient(to right, #ed213a, #93291e)"
+                        default: "linear-gradient(to right, #cb2d3e, #ef473a)"
                     },
 
                 }
@@ -154,15 +154,15 @@ const myThemes: { name: string, options: any }[] = [
                 palette:
                 {
                     primary: {
-                        main: "#818181",
-                        light: "#bfbfbf",
-                        dark: "#737373"
+                        main: "#5f6b78",
+                        light: "#859398",
+                        dark: "#283048"
                     },
                     secondary: {
                         main: "#fafafa"
                     },
                     background: {
-                        default: "linear-gradient(180deg, rgba(160,160,160,1) 0%, rgba(90,90,90,1) 100%)"
+                        default: "linear-gradient(0deg, #283048, #859398)"
                     }
 
                 }

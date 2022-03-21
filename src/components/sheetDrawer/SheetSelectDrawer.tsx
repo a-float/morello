@@ -4,7 +4,7 @@ import Drawer from '@mui/material/Drawer'
 import SheetList from './SheetList'
 import TopBarSpacer from '../TopBarSpacer'
 
-const MAX_SHEET_COUNT = 30
+const MAX_SHEET_COUNT = 100
 
 interface SheetSelectDrawerProps {
     // TODO prop naming while pruning down to the SheetList

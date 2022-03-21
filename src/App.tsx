@@ -7,9 +7,9 @@ import { ThemeProvider } from '@mui/material/styles';
 import themes from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
-import { TagManager, TagContext, Tag } from './TagManager';
-import { SheetData, columns, tasks } from './database'
-import SheetManager from './SheetManager';
+import { TagManager, TagContext, Tag } from './logic/TagManager';
+import { SheetData } from './database'
+import SheetManager from './logic/SheetManager';
 import TaskDisplay from './components/tasks/TaskDisplay';
 
 const LS_VERSION_KEY = 'version'
@@ -40,19 +40,31 @@ const App: FunctionComponent<{}> = () => {
 		isSheetsDrawerOpen: false,
 		isSettingsDrawerOpen: false,
 	})
-	// TODO change default values
 	const [themeState, setThemeState] = useState<ThemeState>({
 		darkMode: false,
 		themeName: themes[0].name,
 	})
 	const [tags, setTags] = useState<Tag[]>(TagManager.defaultTags)
 	const [sheets, setSheets] = useState<SheetState>({
-		sheets: { 'Basic sheet': { columns, tasks } }, // TODO change the initialization?
-		currentSheet: 'Basic sheet'
+		sheets: {
+			'My first todo sheet': {
+				columns: [...SheetManager.defaultColumns],
+				tasks: [
+					{ id: "0", columnId: 0, name: "Arrive", descr:"Happy to see you c:", tagIds: [] },
+					{ id: "1", columnId: 1, name: "Look around!", descr: "Take your time", tagIds: [] },
+					{ id: "2", columnId: 2, name: "Try draggin tasks to other columns", tagIds: [1] },
+					{ id: "3", columnId: 2, name: "Edit?", descr: "Double click on tasks or column names to edit them", tagIds: [3,4,5] },
+					{ id: "4", columnId: 2, name: "Click on the cog icon to customize the theme", tagIds: [2] },
+					{ id: "5", columnId: 2, name: "Enjoy!", tagIds: [3] },
+				]
+			}
+		},
+		currentSheet: 'My first todo sheet'
 	})
 
 	const sheetManagerRef = useRef<SheetManager>(new SheetManager(sheets, setSheets))
 
+	// load all data from local storage on startup
 	useEffect(() => {
 		const storage = window.localStorage
 		const version = storage.getItem(LS_VERSION_KEY)
@@ -66,6 +78,7 @@ const App: FunctionComponent<{}> = () => {
 		if (sheets !== null) {
 			setSheets(JSON.parse(sheets))
 		}
+		// TODO elements do not rerender when tags change
 		const tags = storage.getItem(LS_TAGS_KEY)
 		if (tags !== null) {
 			setTags(JSON.parse(tags))
@@ -76,24 +89,25 @@ const App: FunctionComponent<{}> = () => {
 		}
 	}, [])
 
+	// save sheets
 	useEffect(() => {
 		window.localStorage.setItem(LS_SHEETS_KEY, JSON.stringify(sheets))
 		sheetManagerRef.current.sheetState = sheets	// update manager state
 	}, [sheets])
 
+	// save tags
 	useEffect(() => {
 		window.localStorage.setItem(LS_TAGS_KEY, JSON.stringify(tags))
 		tagManagerRef.current.tags = tags // update manager state
-		console.log("Tags are ", tags);
 	}, [tags])
 
+	// save theme
 	useEffect(() => {
 		window.localStorage.setItem(LS_THEME_KEY, JSON.stringify(themeState))
 	}, [themeState])
 
 	const removeTagFromTasks = (targetId: number) => {
 		setSheets(prevState => {
-			console.log(prevState);
 			const copy: { [key: string]: SheetData } = {}
 			for (const sheetName of [...Object.keys(prevState.sheets)]) {
 				copy[sheetName] = {

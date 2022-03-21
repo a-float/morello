@@ -2,22 +2,24 @@ import { Button, Stack, Typography, TextField, Box, useTheme } from '@mui/materi
 import { FunctionComponent, useState } from 'react'
 import { Task, TaskData } from './Task'
 import { Droppable } from 'react-beautiful-dnd'
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Menu from "@mui/material/Menu";
-import { Add, Edit, Delete, MoreHoriz } from "@mui/icons-material";
+import MenuItem from "@mui/material/MenuItem"
+import IconButton from "@mui/material/IconButton"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import Menu from "@mui/material/Menu"
+import { Add, Edit, Delete, MoreHoriz } from "@mui/icons-material"
 import { grey } from "@mui/material/colors"
 
 export interface TaskColumnData {
     name: string,
+    id: number,
     tasks: TaskData[]
 }
 export type TaskColumnProps = {
-    onAddNewTask: (columnName: string) => void,
+    onAddNewTask: (colId: number) => void,
     onStartTaskEdit: (id: string) => void,
     onDeleteTask: (id: string, columnName: string) => void,
-    onNameChange: (oldName: string, newName: string) => void,
-    onDeleteColumn: (columnName: string) => void
+    onNameChange: (colId: number, newName: string) => void,
+    onDeleteColumn: (colId: number) => void
 } & TaskColumnData
 
 export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
@@ -28,7 +30,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
     const onChangeName = (event: any) => {
         event.preventDefault()
         setState(prevState => ({ ...prevState, editable: false }))
-        props.onNameChange(props.name, state.name)
+        props.onNameChange(props.id, state.name)
     }
     const tasks = props.tasks.map((taskData, index) =>
         <Task
@@ -47,11 +49,12 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
         <Stack spacing={1} sx={{ position: 'relative', borderRadius: "4px", width: '30%', minWidth: '200px', maxWidth: "280px", minHeight: "30px", padding: '0.6em', backgroundColor: bgColor, height: "fit-content" }}>
             <Box
                 onDoubleClick={() => { setState(prevState => ({ ...prevState, editable: true })) }}>
-
                 {!state.editable ?
                     <>
                         <Typography align="center" variant='h5' sx={{ color: 'text.primary' }}>{props.name}</Typography>
-                        <MoreHoriz onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.3em", top: "0em" }} />
+                        <IconButton size="small" onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.5em", top: "0em" }}>
+                            <MoreHoriz />
+                        </IconButton>
                     </>
                     :
                     <form onSubmit={onChangeName}>
@@ -84,7 +87,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                 sx={{ color: 'text.secondary', whiteSpace: 'nowrap', justifyContent: 'flex-start' }}
                 size='small'
                 startIcon={<Add />}
-                onClick={() => props.onAddNewTask(props.name)}>
+                onClick={() => props.onAddNewTask(props.id)}>
                 Add new task
             </Button>
             {/* TODO this and tasks menus are the same. Move to another component? Maybe use the extension from fireship */}
@@ -108,7 +111,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                     </ListItemIcon>
                     Edit
                 </MenuItem>
-                <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); props.onDeleteColumn(props.name); }}>
+                <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); props.onDeleteColumn(props.id); }}>
                     <ListItemIcon>
                         <Delete />
                     </ListItemIcon>

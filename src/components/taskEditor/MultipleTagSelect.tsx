@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import { TagContext } from '../../TagManager'
+import { TagContext } from '../../logic/TagManager'
 import { colord } from 'colord';
 
 interface MultipleTagSelectProps {
@@ -17,7 +17,7 @@ export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (pro
   const {tags, tagManager } = useContext(TagContext)
   const getTextColor = (id: number) => {
     const bgColor = tagManager.getColor(id)
-    return colord(bgColor).toHsl().l < 50 ? "#fafafa" : "#131313"
+    return colord(bgColor).toHsl().l < 55 ? "#fafafa" : "#131313"
   }
   return (
     <div>

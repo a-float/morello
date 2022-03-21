@@ -13,7 +13,7 @@ class TagManager {
         // { id: 0, ...TagManager.defaultTag },
         { id: 1, name: "Chill", color: "#90EE90" },            //lightgreen
         { id: 2, name: "Important", color: "#FFD700" },        //gold
-        { id: 3, name: "VeryImportant", color: "#FA8072" },    //salmon
+        { id: 3, name: "Very Important", color: "#FA8072" },   //salmon
         { id: 4, name: "School", color: "#00FFFF" },           //cyan
         { id: 5, name: "Home", color: "#FFC0CB" },             //pink
     ]
@@ -49,7 +49,6 @@ class TagManager {
         while (id < 0 || this.getTag(id)) {
             id = Math.floor(Math.random() * 10000)
         }
-        console.log(this.tags, id);
         return id
     }
 
@@ -61,9 +60,6 @@ class TagManager {
     }
 
     removeTag(id: number) {
-        // this any as well
-        console.log("hemlo :>");
-        console.log(this.setTags, id);
         this.setTags(prevState => [...prevState.filter(tag => tag.id !== id)])
         this.removeTagFromTasks(id)
     }
@@ -83,7 +79,6 @@ class TagManager {
         const tag = this.getTag(id)
         if (!tag) return `Tag ${id} does not exist`
         this.setTags(prevState => [...prevState.map(tag => tag.id !== id ? tag : { ...tag, color: newColor })])
-        console.log("Changed");
         return null
     }
 

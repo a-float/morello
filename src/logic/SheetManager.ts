@@ -1,7 +1,8 @@
-import { SheetData } from "./database"
-import { SheetState } from './App'
+import { SheetData } from "../database"
+import { SheetState } from '../App'
 
 export default class SheetManager {
+    static defaultColumns = [{ name: "Done", id: 0 }, { name: "In Progress", id: 1 }, { name: "To Do", id: 2 }]
     sheetState: SheetState
     setSheetState: React.Dispatch<React.SetStateAction<SheetState>>
     constructor(state: SheetState, setState: React.Dispatch<React.SetStateAction<SheetState>>) {
@@ -29,7 +30,7 @@ export default class SheetManager {
             ...prevState,
             sheets: {
                 ...prevState.sheets,
-                [getName(newSheetNum)]: { columns: [], tasks: [] }
+                [getName(newSheetNum)]: { columns: SheetManager.defaultColumns, tasks: [] }
             }
         }))
     }

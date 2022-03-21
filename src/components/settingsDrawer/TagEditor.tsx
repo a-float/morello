@@ -1,5 +1,5 @@
 import TagEditItem from './TagEditItem';
-import { Tag, TagContext } from '../../TagManager'
+import { Tag, TagContext } from '../../logic/TagManager'
 import Stack from '@mui/material/Stack'
 import { FunctionComponent, useState, useContext } from 'react';
 import { TwitterPicker } from 'react-color';

@@ -1,15 +1,13 @@
 import { TaskData } from "./components/tasks/Task"
-// TODO move to the SheetManager?
-export const defaultTask =
-{
-    name: "Task Name",
-    descr: "",
-    tagIds: []
+
+export const generateId = () => Math.floor(Math.random() * 10000)
+
+export interface ColumnData {
+    name: string,
+    id: number
 }
-export const columns: string[] = ["Done", "In Progress", "To Do"]
-export const tasks: TaskData[] = []
 
 export interface SheetData {
-    columns: string[],
+    columns: ColumnData[],
     tasks: TaskData[]
 }

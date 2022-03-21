@@ -10,7 +10,7 @@ type EditableListItemProps = {
 } & React.ComponentProps<typeof ListItemButton>
 
 const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
-    const { name, onRenameSheet, onSelectSheet, ...rest } = props
+    const {name, onRenameSheet, onSelectSheet, ...rest } = props
     const [inputValue, setInputValue] = useState(name)
     const [editable, setEditable] = useState(false)
 

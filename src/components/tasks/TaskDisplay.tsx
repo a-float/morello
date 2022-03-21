@@ -1,15 +1,16 @@
-import { FunctionComponent, useState, useRef } from 'react'
+import { FunctionComponent, useState, useRef, useEffect } from 'react'
 import { TaskColumn } from './TaskColumn'
 import { Stack } from '@mui/material'
 import { TaskData } from './Task'
-import { defaultTask, SheetData } from "../../database"
+import { ColumnData, SheetData, generateId } from "../../database"
+import { defaultTask } from './Task'
 import { TaskEditor } from '../taskEditor/TaskEditor'
 import { Add } from '@mui/icons-material'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
-import Fab from '@mui/material/Fab';
+import Fab from '@mui/material/Fab'
 
 export interface TaskDisplayProps {
-    columns: string[],
+    columns: ColumnData[],
     tasks: TaskData[],
     widthOffsets: { left: number, right: number },
     onModifySheet: (data: SheetData) => void
@@ -31,17 +32,14 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
     })
     const scrollRef = useRef<HTMLElement | null>(null)
 
-    // useEffect(() => {
-    //     if(scrollRef.current){
-    //         console.log("scrollin");
-    //         scrollRef.current.scrollTo(scrollRef.current.scrollWidth, 0)
-    //     }
-    // }, [len])
+    useEffect(() => {
+        
+    })
 
-    const addNewTask = (columnName: string) => {
+    const addNewTask = (columnId: number) => {
         // TODO make sure no two ids are the same
         const id = Math.floor(Math.random() * 100000).toString()
-        const newTask = { ...defaultTask, columnId: props.columns.indexOf(columnName), id }
+        let newTask = { ...defaultTask, columnId: columnId, id }
         openEditor(newTask)
     }
 
@@ -83,7 +81,6 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
     const onDragEnd = ({ source, destination }: DropResult) => {
         // Make sure we have a valid destination
         if (destination === undefined || destination === null) return null
-        console.log(source, destination);
         // If the source and destination columns are the same
         // AND if the index is the same, the item isn't moving
         if (
@@ -95,88 +92,61 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
         // Set start and end variables
         const startColName = source.droppableId.split('-').slice(1).join('')
         const endColName = destination.droppableId.split('-').slice(1).join('')
-        const start = props.columns.findIndex(col => col === startColName)
-        const end = props.columns.findIndex(col => col === endColName)
+        const start = props.columns.findIndex(col => col.name === startColName)
+        const end = props.columns.findIndex(col => col.name === endColName)
 
-        // If start is the same as end, we're in the same column
-        if (start === end) {
-            const newTasks = []
-            let foundCount = 0
-            let taskToMove: TaskData = props.tasks[0] // temporary value
-            for (let task of props.tasks) {
-                if (task.columnId === start) {
-                    if (foundCount === source.index) {
-                        taskToMove = task
-                        break
-                    }
-                    foundCount += 1
-                }
-            }
-            foundCount = 0
-            for (let task of props.tasks) {
-                if (task.columnId === start) {
-                    if (foundCount === destination.index) {
-                        newTasks.push(taskToMove)
-                    }
-                    if (task.id !== taskToMove.id) {
-                        newTasks.push(task)
-                        foundCount += 1
-                    }
-                } else {
+        let taskToMove: TaskData | null = null;
+        let toMoveNewTaskIdx = -1
+        let oldBeforeCount = 0
+        let newBeforeCount = 0
+        let newTasks: (TaskData | null)[] = []
+        let pushTaskInEndCheck = false
+        for (const task of props.tasks) {
+            if (task.columnId === start) {
+                if (oldBeforeCount === source.index) {
+                    taskToMove = { ...task, columnId: end }
+                } else if (newBeforeCount !== destination.index || start !== end) {
                     newTasks.push(task)
+                } else {
+                    pushTaskInEndCheck = true
                 }
+                oldBeforeCount++;
             }
-            if (foundCount <= destination.index) newTasks.push(taskToMove)
+            if (task.columnId === end && task.id !== taskToMove?.id) {
+                if (newBeforeCount === destination.index) {
+                    toMoveNewTaskIdx = newTasks.length
+                    newTasks.push(null)
+                    if (pushTaskInEndCheck) {
+                        newTasks.push(task)
+                        pushTaskInEndCheck = false
+                    }
+                }
+                if (start !== end) newTasks.push(task)
+                newBeforeCount++;
+            }
+            if (task.columnId !== start && task.columnId !== end) {
+                newTasks.push(task)
+            }
+        }
+        if (toMoveNewTaskIdx !== -1) newTasks[toMoveNewTaskIdx] = taskToMove
+        else newTasks.push(taskToMove)
 
-            props.onModifySheet({ tasks: newTasks, columns: [...props.columns] })
-            return null
-        }
-        else { // different columns
-            const newTasks = []
-            let foundCount = 0
-            let taskToMove: TaskData = props.tasks[0] // temporary value
-            for (let task of props.tasks) {
-                if (task.columnId === start) {
-                    if (foundCount === source.index) {
-                        taskToMove = task
-                        break
-                    }
-                    foundCount += 1
-                }
-            }
-            taskToMove.columnId = end
-            foundCount = 0
-            // console.log(destination.index)
-            for (let task of props.tasks) {
-                if (task.id === taskToMove.id) continue
-                if (task.columnId === end) {
-                    if (foundCount === destination.index) {
-                        newTasks.push(taskToMove)
-                    }
-                    if (task.id !== taskToMove.id) {
-                        newTasks.push(task)
-                        foundCount += 1
-                    }
-                } else {
-                    newTasks.push(task)
-                }
-            }
-            if (foundCount <= destination.index) newTasks.push(taskToMove)
-            props.onModifySheet({ tasks: newTasks, columns: [...props.columns] })
-        }
-        return null
+        console.log(newTasks.map(task => task?.name + " " + task?.columnId).join("\n"));
+        newTasks = newTasks.filter(t => t !== null)
+        props.onModifySheet({ tasks: newTasks as TaskData[], columns: [...props.columns] })
     }
 
     const addNewColumn = () => {
         let columnCount = props.columns.length + 1
-        let newName = (x: number) => "Column " + x
-        while (props.columns.includes(newName(columnCount))) {
-            columnCount += 1
+        const existingIds = props.columns.map(col => col.id)
+        let newId = generateId()
+        while (existingIds.includes(newId)) {
+            newId = generateId()
         }
-        const newColumns = [...props.columns, newName(columnCount)]
+        const newColumns = [...props.columns, { name: `Column #${columnCount}`, id: newId }]
         props.onModifySheet({ tasks: [...props.tasks], columns: newColumns })
         // TODO hacky scroll
-        // i want to scroll to the right end of the container but only when a new column is added
+        // I want to scroll to the right end of the container but only when a new column is added
         // using useEffect dependant on the props.columns.length, the scroll occurs also when a column is removed
         setTimeout(() => {
             if (scrollRef.current) {
@@ -185,28 +155,24 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
         }, 100)
     }
 
-    const changeColumnName = (oldName: string, newName: string) => {
-        if (props.columns.includes(newName)) {
-            console.log(`'${newName}' is already taken`)
-            return
-        }
-        const colIdx = props.columns.indexOf(oldName)
+    const changeColumnName = (colId: number, newName: string) => {
+        const colIdx = props.columns.findIndex(col => col.id === colId)
         if (colIdx === -1) {
-            console.log(`Internal Error: Invalid oldName: '${oldName}'`)
+            console.error(`Internal Error: Column with id ${colId} does not exist.`)
             return
         }
         const newColumns = [
             ...props.columns.slice(0, colIdx),
-            newName,
+            { id: colId, name: newName },
             ...props.columns.slice(colIdx + 1)
         ]
         props.onModifySheet({ tasks: [...props.tasks], columns: newColumns })
     }
 
-    const deleteColumn = (columnName: string) => {
-        const colIdx = props.columns.indexOf(columnName)
+    const deleteColumn = (colId: number) => {
+        const colIdx = props.columns.findIndex(col => col.id === colId)
         if (colIdx === -1) {
-            console.error('No column with name: ' + columnName)
+            console.error(`Internal Error: Column with id ${colId} does not exist.`)
             return
         } else {
             const newDataSheet = {
@@ -217,16 +183,17 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
         }
     }
 
-    const gridColumns = [...Array(props.columns.length).keys()].map(colIdx =>
+    const gridColumns = props.columns.map(col =>
         <TaskColumn
-            key={props.columns[colIdx]}
+            key={col.id}
             onAddNewTask={addNewTask}
             onDeleteTask={deleteTask}
             onStartTaskEdit={startTaskEdit}
             onNameChange={changeColumnName}
             onDeleteColumn={deleteColumn}
-            name={props.columns[colIdx]}
-            tasks={props.tasks.filter(task => task.columnId === colIdx)}
+            name={col.name}
+            id={col.id}
+            tasks={props.tasks.filter(task => task.columnId === col.id)}
         />)
     return (
         <>

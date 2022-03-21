@@ -3,7 +3,7 @@ import Stack from "@mui/material/Stack"
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import TextField from "@mui/material/TextField"
-import { Tag, TagManager } from '../../TagManager'
+import { Tag, TagManager } from '../../logic/TagManager'
 import styled from "@mui/material/styles/styled";
 import { colord, extend } from 'colord'
 import mixPlugin from "colord/plugins/mix";
