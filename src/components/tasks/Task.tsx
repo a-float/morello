@@ -57,7 +57,8 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         <MoreHoriz onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.2em", top: "0em" }} />
                         <CardContent sx={{ padding: "0", "&:last-child": { "paddingBottom": "0" } }} onDoubleClick={startEdit}>
                             <TagRow tags={props.tagIds} />
-                            <Typography variant='subtitle1' sx={{ wordBreak: "break-word", fontSize: "1.2em", lineHeight: '1.25' }} component="div">
+                            <Typography variant='subtitle1' sx={{ wordBreak: "break-word", fontSize: "1.2rem", lineHeight: '1.25' }} component="div">
+                                
                                 {props.name}
                             </Typography>
                             {props.descr && <Typography variant='body1' sx={{ whiteSpace: "pre-line", marginTop: "0.3em", lineHeight: '1.25', color: "text.secondary" }} component="div">

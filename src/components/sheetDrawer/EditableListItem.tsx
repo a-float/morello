@@ -40,7 +40,7 @@ const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
     return (
         <ListItemButton {...rest} onClick={(event) => onSelectSheet(name)} onDoubleClick={makeEditable}>
             {!editable ?
-                <ListItemText sx={{ wordBreak: "break-all" }} primary={inputValue} />
+                <ListItemText sx={{ wordBreak: "break-word" }} primary={inputValue} />
                 :
                 <TextField
                     autoFocus

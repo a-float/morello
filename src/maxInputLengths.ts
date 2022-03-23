@@ -1,6 +1,6 @@
 const maxInputLength = {
-    tagName: 20,
-    columnName: 20,
+    tagName: 25,
+    columnName: 25,
     sheetName: 25,
     taskName: 40,
     taskDescr: 140

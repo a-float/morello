@@ -56,7 +56,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                 onDoubleClick={() => { setState(prevState => ({ ...prevState, editable: true })) }}>
                 {!state.editable ?
                     <>
-                        <Typography align="center" variant='h5' sx={{ wordBreak: "break-all", color: 'text.primary' }}>
+                        <Typography align="center" variant='h5' sx={{ wordBreak: "break-word", color: 'text.primary' }}>
                             {props.name}
                         </Typography>
                         <IconButton size="small" onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.1em", top: "0" }}>
