@@ -8,6 +8,7 @@ import ListItemIcon from "@mui/material/ListItemIcon"
 import Menu from "@mui/material/Menu"
 import { Add, Edit, Delete, MoreHoriz } from "@mui/icons-material"
 import { grey } from "@mui/material/colors"
+import maxInputLength from '../../maxInputLengths'
 
 export interface TaskColumnData {
     name: string,
@@ -46,13 +47,19 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
     // TODO hardcoded values?
     const bgColor = useTheme().palette.mode === 'dark' ? 'rgba(30,30,30, .7)' : 'rgba(255, 255, 255, .6)'
     return (
-        <Stack spacing={1} sx={{ position: 'relative', borderRadius: "4px", width: '30%', minWidth: '200px', maxWidth: "280px", minHeight: "30px", padding: '0.6em', backgroundColor: bgColor, height: "fit-content" }}>
+        <Stack spacing={1} sx={{
+            position: 'relative', borderRadius: "2px", width: '30%', minWidth: '200px',
+            maxWidth: "280px", minHeight: "30px", padding: '0.6em', paddingTop: '.8em',
+            backgroundColor: bgColor, height: "fit-content"
+        }}>
             <Box
                 onDoubleClick={() => { setState(prevState => ({ ...prevState, editable: true })) }}>
                 {!state.editable ?
                     <>
-                        <Typography align="center" variant='h5' sx={{ color: 'text.primary' }}>{props.name}</Typography>
-                        <IconButton size="small" onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.5em", top: "0em" }}>
+                        <Typography align="center" variant='h5' sx={{ wordBreak: "break-all", color: 'text.primary' }}>
+                            {props.name}
+                        </Typography>
+                        <IconButton size="small" onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.1em", top: "0" }}>
                             <MoreHoriz />
                         </IconButton>
                     </>
@@ -60,6 +67,7 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                     <form onSubmit={onChangeName}>
                         <Stack direction='row' sx={{ justifyContent: "space-between", alignItems: "flex-end" }}>
                             <TextField
+                                inputProps={{ maxLength: maxInputLength.columnName }}
                                 autoFocus
                                 label="Column Name"
                                 value={state.name}

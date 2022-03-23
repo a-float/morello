@@ -7,10 +7,8 @@ export type Tag = {
 }
 
 class TagManager {
-    static defaultTag = { name: "Default", color: '#bababa' }
-    static newTagColor = "#ff00ff"
+    static newTagColor = "#ba00ba"
     static defaultTags = [
-        // { id: 0, ...TagManager.defaultTag },
         { id: 1, name: "Chill", color: "#90EE90" },            //lightgreen
         { id: 2, name: "Important", color: "#FFD700" },        //gold
         { id: 3, name: "Very Important", color: "#FA8072" },   //salmon
@@ -68,8 +66,6 @@ class TagManager {
         console.log(id, newName);
         const tag = this.getTag(id)
         if (!tag) return `Tag doesn't exist`
-        // if (tag.name === TagManager.defaultTag.name) return "Can not modify the default tag"
-        // if (newName === TagManager.defaultTag.name) return "Can not override the default tag"
         if (this.getTagByName(newName)) return `Tag "${newName}" already exists`
         this.setTags([...this.tags.map(tag => tag.id !== id ? tag : { ...tag, name: newName })])
         return null
@@ -83,7 +79,7 @@ class TagManager {
     }
 
     getColor(id: number) {
-        return this.getTag(id)?.color || TagManager.defaultTag.color // Default tag
+        return this.getTag(id)?.color || TagManager.newTagColor // Default tag
     }
 
     getTagByName(name: string) {

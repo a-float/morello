@@ -5,12 +5,13 @@ import TextField from '@mui/material/TextField'
 
 type EditableListItemProps = {
     name: string,
+    maxLength: number
     onRenameSheet: (oldName: string, newName: string) => void,
     onSelectSheet: (sheetName: string) => void
 } & React.ComponentProps<typeof ListItemButton>
 
 const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
-    const {name, onRenameSheet, onSelectSheet, ...rest } = props
+    const { name, onRenameSheet, onSelectSheet, ...rest } = props
     const [inputValue, setInputValue] = useState(name)
     const [editable, setEditable] = useState(false)
 
@@ -39,7 +40,7 @@ const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
     return (
         <ListItemButton {...rest} onClick={(event) => onSelectSheet(name)} onDoubleClick={makeEditable}>
             {!editable ?
-                <ListItemText primary={inputValue} />
+                <ListItemText sx={{ wordBreak: "break-all" }} primary={inputValue} />
                 :
                 <TextField
                     autoFocus
@@ -51,6 +52,7 @@ const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
                     onBlur={completeEdit}
                     onChange={handleNameChange}
                     onKeyDown={handleKeyPress}
+                    inputProps={{ maxLength: props.maxLength }}
                 />
             }
         </ListItemButton>

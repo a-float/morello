@@ -17,7 +17,7 @@ const TagEditor: FunctionComponent<{}> = (props) => {
         setState({ editedTag: tag, anchor: event.currentTarget })
     }
 
-    const {tags, tagManager } = useContext(TagContext)
+    const { tags, tagManager } = useContext(TagContext)
     return (
         <>
             <Stack spacing={3}>
@@ -28,25 +28,19 @@ const TagEditor: FunctionComponent<{}> = (props) => {
                         onChangeName={(x, y) => tagManager.renameTag(x, y)}
                         onDelete={id => tagManager.removeTag(id)} />))
                 }
-                <Button variant="text" onClick={event => tagManager.addTag()}>Add tag</Button>
+                <Button variant="text" onClick={() => tagManager.addTag()}>Add tag</Button>
             </Stack>
             <Dialog
                 id={'tag-color-picker'}
                 open={Boolean(state.editedTag)}
-                // anchorEl={state.anchor}
                 onClose={() => setState({ ...state, editedTag: null })}
-            // anchorOrigin={{
-            //     vertical: 'bottom',
-            //     horizontal: 'center',
-            // }}
-            // transformOrigin={{
-            //     vertical: 'top',
-            //     horizontal: 'center',
-            // }}
             >
                 <TwitterPicker
                     color={state.editedTag?.color || 'red'}
-                    onChangeComplete={colorRes => {tagManager.setTagColor(state.editedTag!.id, colorRes.hex); setState({anchor: null, editedTag: null})}} // TODO bad exclamation mark
+                    onChangeComplete={colorRes => {
+                        tagManager.setTagColor(state.editedTag!.id, colorRes.hex);
+                        setState({ anchor: null, editedTag: null })
+                    }} // TODO bad exclamation mark
                 />
             </Dialog>
         </>)

@@ -1,15 +1,14 @@
 import './App.css';
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
 import SheetSelectDrawer from './components/sheetDrawer/SheetSelectDrawer'
-import SettingsManager from './components/settingsDrawer/SettingsManager'
+import SettingsDrawer from './components/settingsDrawer/SettingsDrawer'
 import Box from '@mui/material/Box'
 import { ThemeProvider } from '@mui/material/styles';
-import themes from './themes'
+import themes, { createOptions } from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
 import { TagManager, TagContext, Tag } from './logic/TagManager';
-import { SheetData } from './database'
-import SheetManager from './logic/SheetManager';
+import SheetManager, {SheetData} from './logic/SheetManager';
 import TaskDisplay from './components/tasks/TaskDisplay';
 
 const LS_VERSION_KEY = 'version'
@@ -50,10 +49,10 @@ const App: FunctionComponent<{}> = () => {
 			'My first todo sheet': {
 				columns: [...SheetManager.defaultColumns],
 				tasks: [
-					{ id: "0", columnId: 0, name: "Arrive", descr:"Happy to see you c:", tagIds: [] },
+					{ id: "0", columnId: 0, name: "Arrive", descr: "Happy to see you c:", tagIds: [] },
 					{ id: "1", columnId: 1, name: "Look around!", descr: "Take your time", tagIds: [] },
 					{ id: "2", columnId: 2, name: "Try draggin tasks to other columns", tagIds: [1] },
-					{ id: "3", columnId: 2, name: "Edit?", descr: "Double click on tasks or column names to edit them", tagIds: [3,4,5] },
+					{ id: "3", columnId: 2, name: "Edit?", descr: "Double click on tasks or column names to edit them", tagIds: [3, 4, 5] },
 					{ id: "4", columnId: 2, name: "Click on the cog icon to customize the theme", tagIds: [2] },
 					{ id: "5", columnId: 2, name: "Enjoy!", tagIds: [3] },
 				]
@@ -74,14 +73,14 @@ const App: FunctionComponent<{}> = () => {
 			storage.setItem(LS_VERSION_KEY, CURRENT_VERSION)
 			return
 		}
-		const sheets = storage.getItem(LS_SHEETS_KEY)
-		if (sheets !== null) {
-			setSheets(JSON.parse(sheets))
-		}
 		// TODO elements do not rerender when tags change
 		const tags = storage.getItem(LS_TAGS_KEY)
 		if (tags !== null) {
 			setTags(JSON.parse(tags))
+		}
+		const sheets = storage.getItem(LS_SHEETS_KEY)
+		if (sheets !== null) {
+			setSheets(JSON.parse(sheets))
 		}
 		const theme = storage.getItem(LS_THEME_KEY)
 		if (theme !== null) {
@@ -143,8 +142,8 @@ const App: FunctionComponent<{}> = () => {
 	// Update the theme only if the mode changes
 	// TODO does it actually make a difference?
 	const theme = useMemo(() => {
-		const options = themes.find(t => t.name === themeState.themeName)?.options ?? {}
-		options.palette.mode = (themeState.darkMode ? "dark" : "light")
+		let options = themes.find(t => t.name === themeState.themeName)?.options ?? {}
+		options = createOptions(options, themeState.darkMode)
 		return createTheme(options)
 	}, [themeState])
 
@@ -172,7 +171,7 @@ const App: FunctionComponent<{}> = () => {
 						deleteSheet={sheetManagerRef.current.deleteSheet}
 						selectedSheet={sheets.currentSheet} />
 
-					<SettingsManager onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}
+					<SettingsDrawer onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}
 						currentThemeName={themeState.themeName}
 						onSelectTheme={setTheme}
 						onSetDarkMode={setDarkMode}

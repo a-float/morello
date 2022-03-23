@@ -7,11 +7,11 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TopBarSpacer from '../TopBarSpacer'
-import themes from '../../themes'
+import themes, { createOptions } from '../../themes'
 import Grid from "@mui/material/Grid"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThemePreview from './ThemePreview';
-import { Button, FormControlLabel, Switch } from '@mui/material';
+import { Button, FormControlLabel, Switch, useTheme } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import TagEditor from './TagEditor'
 
@@ -24,10 +24,10 @@ type settingsManagerProps = {
     isDarkMode: boolean
 }
 
-// TODO rename to SettingsDrawer?
-const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
+const SettingsDrawer: FunctionComponent<settingsManagerProps> = (props) => {
+    const darkMode = useTheme().palette.mode === "dark"
     const themePreviews = themes.map(t => <Grid item xs={6} key={t.name}>
-        <ThemeProvider theme={createTheme(t.options)}>
+        <ThemeProvider theme={createTheme(createOptions(t.options, darkMode))}>
             <Button onClick={() => props.onSelectTheme(t.name)}
                 sx={{
                     width: "100%", flexDirection: 'column',
@@ -47,9 +47,12 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
             open={props.isDrawerOpen}
             onClose={event => props.onToggleDrawer(false)}
             id="settings-drawer"
+            PaperProps={{
+                sx: { minWidth: "200px", maxWidth: "350px", width: "70%" },
+              }}
         >
             <TopBarSpacer />
-            <Box id="settings-container" sx={{ minWidth: "250px", maxWidth: "320px" }}>
+            <Box id="settings-container">
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -59,7 +62,7 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
                         <Typography>Tags</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <TagEditor/>
+                        <TagEditor />
                     </AccordionDetails>
                 </Accordion>
                 <Accordion>
@@ -94,4 +97,4 @@ const SettingsManager: FunctionComponent<settingsManagerProps> = (props) => {
     )
 }
 
-export default SettingsManager
+export default SettingsDrawer

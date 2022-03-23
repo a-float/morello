@@ -15,8 +15,8 @@ export interface TopBarProps {
 
 const TopBar: FunctionComponent<TopBarProps> = (props) => {
     return (
-        <AppBar position="sticky" color='secondary'
-            sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, flex: "0 auto"/*,order: { xs: 1, sm: -1 } */ }}>
+        <AppBar enableColorOnDark position="sticky" color="secondary"
+            sx={{backgroundImage: "none", zIndex: (theme) => theme.zIndex.drawer + 1, flex: "0 auto"/*,order: { xs: 1, sm: -1 } */ }}>
             <Toolbar variant="dense">
                 <IconButton
                     size="large"

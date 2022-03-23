@@ -2,12 +2,13 @@ import { FunctionComponent, useState, useRef, useEffect } from 'react'
 import { TaskColumn } from './TaskColumn'
 import { Stack } from '@mui/material'
 import { TaskData } from './Task'
-import { ColumnData, SheetData, generateId } from "../../database"
+import { ColumnData, generateId } from "../../temps"
 import { defaultTask } from './Task'
 import { TaskEditor } from '../taskEditor/TaskEditor'
 import { Add } from '@mui/icons-material'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import Fab from '@mui/material/Fab'
+import { SheetData } from '../../logic/SheetManager'
 
 export interface TaskDisplayProps {
     columns: ColumnData[],
@@ -33,7 +34,7 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
     const scrollRef = useRef<HTMLElement | null>(null)
 
     useEffect(() => {
-        
+
     })
 
     const addNewTask = (columnId: number) => {
@@ -222,11 +223,8 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
                 isOpen={state.isEditorOpen}
                 taskData={state.editedTaskData}
                 onEndEdit={onEndTaskEdit} />
-            <Fab variant="circular" aria-label="add column" onClick={() => {
-                addNewColumn();
-            }}
-                color="inherit"
-                sx={{ position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
+            <Fab variant="circular" aria-label="add column" onClick={() => addNewColumn()}
+                sx={{ backgroundColor: "secondary.main", position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
                 <Add color="primary" />
             </Fab>
         </>

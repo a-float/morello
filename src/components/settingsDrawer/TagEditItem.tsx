@@ -3,7 +3,8 @@ import Stack from "@mui/material/Stack"
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import TextField from "@mui/material/TextField"
-import { Tag, TagManager } from '../../logic/TagManager'
+import maxInputLength from "../../maxInputLengths";
+import { Tag } from '../../logic/TagManager'
 import styled from "@mui/material/styles/styled";
 import { colord, extend } from 'colord'
 import mixPlugin from "colord/plugins/mix";
@@ -44,7 +45,7 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
         <>
             <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
                 <TextField
-                    disabled={props.tag.name === TagManager.defaultTag.name}
+                    inputProps={{ maxLength: maxInputLength.tagName }}
                     size='small'
                     variant="outlined"
                     defaultValue={props.tag.name}

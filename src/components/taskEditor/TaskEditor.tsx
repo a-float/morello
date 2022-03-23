@@ -1,7 +1,8 @@
-import { FormEvent, FunctionComponent, FocusEvent} from 'react'
+import { FormEvent, FunctionComponent, FocusEvent } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { TaskData } from '../tasks/Task'
 import { MultipleTagSelect } from './MultipleTagSelect'
+import maxInputLength from '../../maxInputLengths'
 
 interface TaskEditorProps {
     isOpen: boolean,
@@ -26,7 +27,7 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
         props.onEndEdit(newTaskData);
     }
 
-    const handleFocus = (event: FocusEvent<any>) => {event.target.select() }
+    const handleFocus = (event: FocusEvent<any>) => { event.target.select() }
 
     return (
         <div>
@@ -49,6 +50,7 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
                             type="text"
                             fullWidth
                             variant="outlined"
+                            inputProps={{ maxLength: maxInputLength.taskName }}
                             required
                         />
                         <MultipleTagSelect tags={props.taskData?.tagIds || []} />
@@ -62,6 +64,7 @@ export const TaskEditor: FunctionComponent<TaskEditorProps> = (props) => {
                             type="text"
                             fullWidth
                             variant="outlined"
+                            inputProps={{ maxLength: maxInputLength.taskDescr }}
                         />
                     </DialogContent>
                     <DialogActions>

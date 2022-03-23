@@ -1,5 +1,20 @@
 // import { ThemeOptions } from "@mui/material/styles/createTheme";
 
+const secondaryColor = {
+    dark: {
+        main: "#171717"
+    },
+    light: {
+        main: "#fafafa"
+    }
+}
+
+export const createOptions = (options: any, isDarkMode: boolean): any => {
+    const mode = isDarkMode ? "dark" : "light"
+    const newOptions = {...options, palette: {...options.palette, mode, secondary: secondaryColor[mode]}}
+    return newOptions
+}
+
 const common = {
     palette: {
         action: {
@@ -21,9 +36,6 @@ const myThemes: { name: string, options: any }[] = [
                         light: "#8f94fb",
                         dark: "#4e54c8"
                     },
-                    secondary: {
-                        main: "#fafafa"
-                    },
                     background: {
                         default: "linear-gradient(135deg, #8f94fb, #4e54c8)"
                     }
@@ -42,9 +54,6 @@ const myThemes: { name: string, options: any }[] = [
                         main: "#dc3a3c",
                         light: "#ef473a",
                         dark: "#cb2d3e"
-                    },
-                    secondary: {
-                        main: "#fafafa"
                     },
                     background: {
                         default: "linear-gradient(to right, #cb2d3e, #ef473a)"
@@ -89,9 +98,6 @@ const myThemes: { name: string, options: any }[] = [
                         light: "#ffc3a0",
                         dark: "#ffafbd"
                     },
-                    secondary: {
-                        main: "#fafafa"
-                    },
                     background: {
                         default: "linear-gradient(to right, #ffafbd, #ffc3a0)"
                     }
@@ -116,7 +122,7 @@ const myThemes: { name: string, options: any }[] = [
                         main: "#fafafa"
                     },
                     background: {
-                        default:"linear-gradient(90deg, rgba(255,212,52,1) 0%, rgba(255,79,216,1) 100%)"
+                        default: "linear-gradient(90deg, rgba(255,212,52,1) 0%, rgba(255,79,216,1) 100%)"
                     }
 
                 }
@@ -134,9 +140,6 @@ const myThemes: { name: string, options: any }[] = [
                         main: "#bd97eb",
                         light: "#8bfafc",
                         dark: "#ed35da"
-                    },
-                    secondary: {
-                        main: "#fafafa"
                     },
                     background: {
                         default: "linear-gradient(to right, #ef32d9, #89fffd)"
@@ -158,9 +161,6 @@ const myThemes: { name: string, options: any }[] = [
                         light: "#859398",
                         dark: "#283048"
                     },
-                    secondary: {
-                        main: "#fafafa"
-                    },
                     background: {
                         default: "linear-gradient(0deg, #283048, #859398)"
                     }
@@ -172,5 +172,4 @@ const myThemes: { name: string, options: any }[] = [
 ]
 
 myThemes.forEach(t => t.options.palette.text = { disabled: t.options.palette.primary.dark })
-console.log(myThemes);
 export default myThemes

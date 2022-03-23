@@ -7,7 +7,7 @@ import { Draggable } from 'react-beautiful-dnd'
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Menu from "@mui/material/Menu";
-import { useTheme } from "@mui/material/styles"
+// import { useTheme } from "@mui/material/styles"
 
 export const defaultTask =
 {
@@ -36,12 +36,13 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
     const openMenu = (event: React.MouseEvent<any>) => {
         setMenuAnchor(event.currentTarget)
     }
-    const theme = useTheme()
+    // const theme = useTheme()
     return (
         <>
             <Draggable draggableId={props.id} index={props.index}>
                 {(provided, snapshot) => (
                     <Card
+                        color="secondary"
                         elevation={0}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
@@ -49,17 +50,17 @@ export const Task: FunctionComponent<TaskProps> = (props) => {
                         sx={{
                             position: "relative",
                             marginBottom: '0.5em',
-                            padding: '0.6em 0.6em',
-                            border: snapshot.isDragging ? `solid 3px ${theme.palette.primary.main}` : "none",
+                            padding: '0.8em 0.6em 0.6em 0.6em',
+                            // border: snapshot.isDragging ? `solid 3px ${theme.palette.primary.main}` : "none",
                         }}
                     >
                         <MoreHoriz onClick={openMenu} sx={{ color: grey[500], "&:hover": { color: grey[800] }, position: "absolute", right: "0.2em", top: "0em" }} />
                         <CardContent sx={{ padding: "0", "&:last-child": { "paddingBottom": "0" } }} onDoubleClick={startEdit}>
                             <TagRow tags={props.tagIds} />
-                            <Typography variant='subtitle1' sx={{ lineHeight: '1.25' }} component="div">
+                            <Typography variant='subtitle1' sx={{ wordBreak: "break-word", fontSize: "1.2em", lineHeight: '1.25' }} component="div">
                                 {props.name}
                             </Typography>
-                            {props.descr && <Typography variant='body2' sx={{ whiteSpace: "pre-line", marginTop: "0.3em", lineHeight: '1.25', color: grey[600] }} component="div">
+                            {props.descr && <Typography variant='body1' sx={{ whiteSpace: "pre-line", marginTop: "0.3em", lineHeight: '1.25', color: "text.secondary" }} component="div">
                                 {props.descr}
                             </Typography>}
                         </CardContent>

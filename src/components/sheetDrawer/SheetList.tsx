@@ -3,6 +3,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
+import maxInputLength from '../../maxInputLengths'
 import EditableListItem from './EditableListItem'
 import { Close } from '@mui/icons-material';
 import { grey } from "@mui/material/colors"
@@ -30,7 +31,8 @@ const SheetList: FunctionComponent<SheetListProps> = (props) => {
                 selected={sheetName === props.selectedSheet}
                 onSelectSheet={props.onSelectSheet}
                 onRenameSheet={props.onRenameSheet}
-                name={sheetName} />
+                name={sheetName}
+                maxLength={maxInputLength.sheetName} />
         </ListItem>
     )
     return (

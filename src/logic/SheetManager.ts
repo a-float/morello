@@ -1,5 +1,11 @@
-import { SheetData } from "../database"
 import { SheetState } from '../App'
+import { TaskData } from '../components/tasks/Task'
+import { ColumnData } from '../temps'
+
+export interface SheetData {
+    columns: ColumnData[],
+    tasks: TaskData[]
+}
 
 export default class SheetManager {
     static defaultColumns = [{ name: "Done", id: 0 }, { name: "In Progress", id: 1 }, { name: "To Do", id: 2 }]
