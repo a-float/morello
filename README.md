@@ -1,4 +1,11 @@
-A TODO app created using React with MaterialUI
+# Morello
+A todo app created using React with MaterialUI
 
-Usage:
-`npm start`
+Features:
+- drag and drop to move tasks between the columns
+- theme customization
+- tags customization
+- multiple todo sheets
+
+Usage:  
+`npm start` to run the app
