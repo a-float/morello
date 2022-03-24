@@ -93,8 +93,10 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
         // Set start and end variables
         const startColName = source.droppableId.split('-').slice(1).join('')
         const endColName = destination.droppableId.split('-').slice(1).join('')
-        const start = props.columns.findIndex(col => col.name === startColName)
-        const end = props.columns.findIndex(col => col.name === endColName)
+        // get column ids using their names
+        // their is was passed by the drop context, so they must exist
+        const startId = props.columns.find(col => col.name === startColName)!.id
+        const end = props.columns.find(col => col.name === endColName)!.id
 
         let taskToMove: TaskData | null = null;
         let toMoveNewTaskIdx = -1
@@ -103,10 +105,10 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
         let newTasks: (TaskData | null)[] = []
         let pushTaskInEndCheck = false
         for (const task of props.tasks) {
-            if (task.columnId === start) {
+            if (task.columnId === startId) {
                 if (oldBeforeCount === source.index) {
                     taskToMove = { ...task, columnId: end }
-                } else if (newBeforeCount !== destination.index || start !== end) {
+                } else if (newBeforeCount !== destination.index || startId !== end) {
                     newTasks.push(task)
                 } else {
                     pushTaskInEndCheck = true
@@ -122,10 +124,10 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
                         pushTaskInEndCheck = false
                     }
                 }
-                if (start !== end) newTasks.push(task)
+                if (startId !== end) newTasks.push(task)
                 newBeforeCount++;
             }
-            if (task.columnId !== start && task.columnId !== end) {
+            if (task.columnId !== startId && task.columnId !== end) {
                 newTasks.push(task)
             }
         }
@@ -171,17 +173,11 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
     }
 
     const deleteColumn = (colId: number) => {
-        const colIdx = props.columns.findIndex(col => col.id === colId)
-        if (colIdx === -1) {
-            console.error(`Internal Error: Column with id ${colId} does not exist.`)
-            return
-        } else {
-            const newDataSheet = {
-                columns: props.columns.filter((col, i) => i !== colIdx),
-                tasks: props.tasks.filter(task => task.columnId !== colIdx)
-            }
-            props.onModifySheet(newDataSheet)
+        const newDataSheet = {
+            columns: props.columns.filter(col => col.id !== colId),
+            tasks: props.tasks.filter(task => task.columnId !== colId)
         }
+        props.onModifySheet(newDataSheet)
     }
 
     const gridColumns = props.columns.map(col =>
