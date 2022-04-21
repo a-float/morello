@@ -4,23 +4,25 @@ import Drawer from '@mui/material/Drawer'
 import SheetList from './SheetList'
 import TopBarSpacer from '../TopBarSpacer'
 import { WindowSizeContext } from '../../App'
+import { SheetAction, SheetActionType } from '../../logic/sheets/sheetTypes'
 
 const MAX_SHEET_COUNT = 100
 
 interface SheetSelectDrawerProps {
-    // TODO prop naming while pruning down to the SheetList
     sheetNames: string[]
     onToggleDrawer: (toggle: boolean) => void,
-    addSheet: () => void,
-    selectSheet: (name: string) => void,
-    renameSheet: (oldName: string, newName: string) => void,
-    deleteSheet: (name: string) => void,
+    sheetDispatch: React.Dispatch<SheetAction>,
     selectedSheet: string,
     isDrawerOpen: boolean
 }
 
 const SheetSelectDrawer: FunctionComponent<SheetSelectDrawerProps> = (props) => {
     const isMobile = useContext(WindowSizeContext)
+    const addSheet = () => props.sheetDispatch({ type: SheetActionType.ADD, payload: {} })
+    const renameSheet = (oldName: string, newName: string) => props.sheetDispatch({ type: SheetActionType.RENAME, payload: { oldName, newName } })
+    const selectSheet = (sheetName: string) => props.sheetDispatch({ type: SheetActionType.SELECT, payload: { sheetName } })
+    const deleteSheet = (sheetName: string) => props.sheetDispatch({ type: SheetActionType.DELETE, payload: { sheetName } })
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Drawer
@@ -32,11 +34,11 @@ const SheetSelectDrawer: FunctionComponent<SheetSelectDrawerProps> = (props) => 
                 <TopBarSpacer />
                 <SheetList
                     sheets={props.sheetNames}
-                    onAddSheet={props.addSheet}
+                    onAddSheet={addSheet}
                     maxSheetCount={MAX_SHEET_COUNT}
-                    onRenameSheet={props.renameSheet}
-                    onSelectSheet={props.selectSheet}
-                    onDeleteSheet={props.deleteSheet}
+                    onRenameSheet={renameSheet}
+                    onSelectSheet={selectSheet}
+                    onDeleteSheet={deleteSheet}
                     selectedSheet={props.selectedSheet}
                 />
             </Drawer>

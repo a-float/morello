@@ -8,7 +8,7 @@ import { TaskEditor } from '../taskEditor/TaskEditor'
 import { Add } from '@mui/icons-material'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import Fab from '@mui/material/Fab'
-import { SheetData } from '../../logic/SheetManager'
+import { SheetData } from '../../logic/sheets/sheetTypes'
 
 export interface TaskDisplayProps {
     columns: ColumnData[],

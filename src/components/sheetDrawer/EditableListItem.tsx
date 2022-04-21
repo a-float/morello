@@ -4,6 +4,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import TextField from '@mui/material/TextField'
 
 type EditableListItemProps = {
+    allNames: string[],
     name: string,
     maxLength: number
     onRenameSheet: (oldName: string, newName: string) => void,
@@ -11,21 +12,30 @@ type EditableListItemProps = {
 } & React.ComponentProps<typeof ListItemButton>
 
 const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
-    const { name, onRenameSheet, onSelectSheet, ...rest } = props
+    const { name, allNames, onRenameSheet, onSelectSheet, ...rest } = props
     const [inputValue, setInputValue] = useState(name)
     const [editable, setEditable] = useState(false)
+    const [error, setError] = useState("")
 
-    const makeEditable = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => { event.stopPropagation(); setEditable(true) }
+    const makeEditable = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => { setEditable(true) }
     const handleNameChange = (event: ChangeEvent<any>) => { setInputValue(event.target.value) }
 
     const completeEdit = () => {
-        setEditable(false);
-        onRenameSheet(name, inputValue)
+        if (name !== inputValue && allNames.includes(inputValue)) {
+            setError("Duplicate name")
+            // TODO error is not actually displayed
+            // duplicate sheet names are not allowed though
+            setEditable(false)
+        } else {
+            setEditable(false);
+            onRenameSheet(name, inputValue)
+        }
     }
 
-    const stopEdit = () => {
+    const cancelEdit = () => {
         setEditable(false);
         setInputValue(name)
+        setError("")
     }
 
     const handleKeyPress = (event: React.KeyboardEvent) => {
@@ -33,16 +43,18 @@ const EditableListItem: FunctionComponent<EditableListItemProps> = (props) => {
         if (event.key === 'Enter') {
             completeEdit()
         } else if (event.code === 'Escape') {
-            stopEdit()
+            cancelEdit()
         }
     }
 
     return (
-        <ListItemButton {...rest} onClick={(event) => onSelectSheet(name)} onDoubleClick={makeEditable}>
+        <ListItemButton {...rest} onClick={() => onSelectSheet(name)} onDoubleClick={makeEditable}>
             {!editable ?
-                <ListItemText sx={{ wordBreak: "break-word" }} primary={inputValue} />
+                <ListItemText sx={{ wordBreak: "break-word" }} primary={name} />
                 :
                 <TextField
+                    error={Boolean(error)}
+                    helperText={error}
                     autoFocus
                     id='column-name-input'
                     label="Sheet Name"

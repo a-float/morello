@@ -8,9 +8,10 @@ import themes, { createOptions } from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
 import { TagManager, TagContext, Tag } from './logic/TagManager';
-import SheetManager, { SheetData } from './logic/SheetManager';
 import TaskDisplay from './components/tasks/TaskDisplay';
 import { createContext } from 'react';
+import { SheetActionType, SheetData } from './logic/sheets/sheetTypes';
+import { SheetState, useSheets } from './logic/sheets/useSheets';
 
 const LS_VERSION_KEY = 'version'
 const LS_SHEETS_KEY = "sheet_data"
@@ -28,13 +29,6 @@ type ThemeState = {
 	themeName: string
 }
 
-export type SheetState = {
-	sheets: {
-		[key: string]: SheetData
-	},
-	currentSheet: string
-}
-
 export const WindowSizeContext = createContext(false)
 
 const App: FunctionComponent<{}> = () => {
@@ -48,24 +42,8 @@ const App: FunctionComponent<{}> = () => {
 		themeName: themes[0].name,
 	})
 	const [tags, setTags] = useState<Tag[]>(TagManager.defaultTags)
-	const [sheets, setSheets] = useState<SheetState>({
-		sheets: {
-			'My first todo sheet': {
-				columns: [...SheetManager.defaultColumns],
-				tasks: [
-					{ id: "0", columnId: 0, name: "Arrive", descr: "Happy to see you c:", tagIds: [] },
-					{ id: "1", columnId: 1, name: "Look around!", descr: "Take your time", tagIds: [] },
-					{ id: "2", columnId: 2, name: "Try draggin tasks to other columns", tagIds: [1] },
-					{ id: "3", columnId: 2, name: "Edit?", descr: "Double click on tasks or column names to edit them", tagIds: [3, 4, 5] },
-					{ id: "4", columnId: 2, name: "Click on the cog icon to customize the theme", tagIds: [2] },
-					{ id: "5", columnId: 2, name: "Enjoy!", tagIds: [3] },
-				]
-			}
-		},
-		currentSheet: 'My first todo sheet'
-	})
+	const [sheets, dispatchSheets] = useSheets()
 
-	const sheetManagerRef = useRef<SheetManager>(new SheetManager(sheets, setSheets))
 	//choose the screen size 
 	const handleResize = () => {
 		if (window.innerWidth < 600) {
@@ -93,18 +71,21 @@ const App: FunctionComponent<{}> = () => {
 		}
 		const sheets = storage.getItem(LS_SHEETS_KEY)
 		if (sheets !== null) {
-			setSheets(JSON.parse(sheets))
+			const data = JSON.parse(sheets) as SheetState
+			dispatchSheets({
+				type: SheetActionType.FETCH,
+				payload: { data }
+			})
 		}
 		const theme = storage.getItem(LS_THEME_KEY)
 		if (theme !== null) {
 			setThemeState(JSON.parse(theme))
 		}
-	}, [])
+	}, [dispatchSheets])
 
 	// save sheets
 	useEffect(() => {
 		window.localStorage.setItem(LS_SHEETS_KEY, JSON.stringify(sheets))
-		sheetManagerRef.current.sheetState = sheets	// update manager state
 	}, [sheets])
 
 	// save tags
@@ -119,21 +100,9 @@ const App: FunctionComponent<{}> = () => {
 	}, [themeState])
 
 	const removeTagFromTasks = (targetId: number) => {
-		setSheets(prevState => {
-			const copy: { [key: string]: SheetData } = {}
-			for (const sheetName of [...Object.keys(prevState.sheets)]) {
-				copy[sheetName] = {
-					columns: [...prevState.sheets[sheetName].columns],
-					tasks: [...prevState.sheets[sheetName].tasks]
-				}
-				for (const task of copy[sheetName].tasks) {
-					task.tagIds = task.tagIds.filter(tag => tag !== targetId)
-				}
-			}
-			return ({
-				currentSheet: prevState.currentSheet,
-				sheets: copy
-			})
+		dispatchSheets({
+			type: SheetActionType.REMOVE_TAG,
+			payload: { tagId: targetId }
 		})
 	}
 
@@ -152,6 +121,13 @@ const App: FunctionComponent<{}> = () => {
 		setThemeState(prevState => ({ ...prevState, darkMode: isDark }))
 	}
 
+
+	const handleModifySheet = (data: SheetData) => {
+		dispatchSheets({
+			type: SheetActionType.UPDATE,
+			payload: { data }
+		})
+	}
 	// Update the theme only if the mode changes
 	// TODO does it actually make a difference?
 	const theme = useMemo(() => {
@@ -173,16 +149,13 @@ const App: FunctionComponent<{}> = () => {
 						<TaskDisplay
 							tasks={currentSheetData.tasks}
 							columns={currentSheetData.columns}
-							onModifySheet={sheetManagerRef.current.updateSheet}
+							onModifySheet={handleModifySheet}
 							widthOffsets={{ left: state.isSheetsDrawerOpen ? 200 : 0, right: 0 }} />
 
 						<SheetSelectDrawer onToggleDrawer={toggleSheetDrawer}
 							isDrawerOpen={state.isSheetsDrawerOpen}
 							sheetNames={[...Object.keys(sheets.sheets)]}
-							addSheet={sheetManagerRef.current.addSheet}
-							selectSheet={sheetManagerRef.current.selectSheet}
-							renameSheet={sheetManagerRef.current.renameSheet}
-							deleteSheet={sheetManagerRef.current.deleteSheet}
+							sheetDispatch={dispatchSheets}
 							selectedSheet={sheets.currentSheet} />
 
 						<SettingsDrawer onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}

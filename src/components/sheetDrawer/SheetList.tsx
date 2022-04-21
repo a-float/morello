@@ -31,6 +31,7 @@ const SheetList: FunctionComponent<SheetListProps> = (props) => {
                 selected={sheetName === props.selectedSheet}
                 onSelectSheet={props.onSelectSheet}
                 onRenameSheet={props.onRenameSheet}
+                allNames={[...Object.values(props.sheets)]}
                 name={sheetName}
                 maxLength={maxInputLength.sheetName} />
         </ListItem>
