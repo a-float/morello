@@ -33,7 +33,7 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
 
     const StyledButton = styled(Button)`
         background-color: ${props.tag.color};
-        padding: 6px 12px;
+        padding: 0px;
         &:hover {
             background-color: ${darkerTone};
         }
@@ -50,10 +50,11 @@ const TagEditItem: FunctionComponent<TagEditItemProps> = props => {
                     variant="outlined"
                     defaultValue={props.tag.name}
                     onChange={event => props.onChangeName(props.tag.id, event.target.value)}
-                    sx={{ marginRight: "20px" }} />
-                <StyledButton variant="contained" onClick={event => props.onOpenPicker(event.target, props.tag)}
-                    sx={{ backgroundColor: props.tag.color, minHeight: "1.7em", maxWidth: "2em", margin: "0px 20px 0px 10px" }}>
-                </StyledButton>
+                    sx={{ marginRight: "20px", minWidth: "18ch" }} />
+                <StyledButton
+                    variant="contained"
+                    onClick={event => props.onOpenPicker(event.target, props.tag)}
+                    sx={{ backgroundColor: props.tag.color, minWidth: "2em", width: "20%", minHeight: "1.7em", margin: "0px 20px 0px 10px" }} />
                 <MyIcon color="#aaaaaa" hoverColor="#666666" onClick={openMenu}>
                     <MoreHoriz />
                 </MyIcon>

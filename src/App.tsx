@@ -8,8 +8,9 @@ import themes, { createOptions } from './themes'
 import TopBar from './components/TopBar'
 import { createTheme } from "@mui/material";
 import { TagManager, TagContext, Tag } from './logic/TagManager';
-import SheetManager, {SheetData} from './logic/SheetManager';
+import SheetManager, { SheetData } from './logic/SheetManager';
 import TaskDisplay from './components/tasks/TaskDisplay';
+import { createContext } from 'react';
 
 const LS_VERSION_KEY = 'version'
 const LS_SHEETS_KEY = "sheet_data"
@@ -34,7 +35,10 @@ export type SheetState = {
 	currentSheet: string
 }
 
+export const WindowSizeContext = createContext(false)
+
 const App: FunctionComponent<{}> = () => {
+	const [isMobile, setIsMobile] = useState(false)
 	const [state, setState] = useState<AppState>({
 		isSheetsDrawerOpen: false,
 		isSettingsDrawerOpen: false,
@@ -62,9 +66,18 @@ const App: FunctionComponent<{}> = () => {
 	})
 
 	const sheetManagerRef = useRef<SheetManager>(new SheetManager(sheets, setSheets))
+	//choose the screen size 
+	const handleResize = () => {
+		if (window.innerWidth < 600) {
+			setIsMobile(true)
+		} else {
+			setIsMobile(false)
+		}
+	}
 
 	// load all data from local storage on startup
 	useEffect(() => {
+		window.addEventListener("resize", handleResize)
 		const storage = window.localStorage
 		const version = storage.getItem(LS_VERSION_KEY)
 		if (!version || version !== CURRENT_VERSION) {
@@ -150,34 +163,36 @@ const App: FunctionComponent<{}> = () => {
 	const currentSheetData = sheets.sheets[sheets.currentSheet]
 	return (
 		<ThemeProvider theme={theme}>
-			<TagContext.Provider value={{ tags, tagManager: tagManagerRef.current }}>
-				<Box className="App" sx={{ background: theme.palette.background.default, height: "100vh", display: 'flex', flexDirection: 'column' }}>
-					<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
-						onToggleSheetDrawer={toggleSheetDrawer}
-						onToggleSettingsDrawer={toggleSettingsDrawer} />
+			<WindowSizeContext.Provider value={isMobile}>
+				<TagContext.Provider value={{ tags, tagManager: tagManagerRef.current }}>
+					<Box className="App" sx={{ background: theme.palette.background.default, height: "100vh", display: 'flex', flexDirection: 'column' }}>
+						<TopBar isSheetDrawerOpen={state.isSheetsDrawerOpen}
+							onToggleSheetDrawer={toggleSheetDrawer}
+							onToggleSettingsDrawer={toggleSettingsDrawer} />
 
-					<TaskDisplay
-						tasks={currentSheetData.tasks}
-						columns={currentSheetData.columns}
-						onModifySheet={sheetManagerRef.current.updateSheet}
-						widthOffsets={{ left: state.isSheetsDrawerOpen ? 200 : 0, right: 0 }} />
+						<TaskDisplay
+							tasks={currentSheetData.tasks}
+							columns={currentSheetData.columns}
+							onModifySheet={sheetManagerRef.current.updateSheet}
+							widthOffsets={{ left: state.isSheetsDrawerOpen ? 200 : 0, right: 0 }} />
 
-					<SheetSelectDrawer onToggleDrawer={toggleSheetDrawer}
-						isDrawerOpen={state.isSheetsDrawerOpen}
-						sheetNames={[...Object.keys(sheets.sheets)]}
-						addSheet={sheetManagerRef.current.addSheet}
-						selectSheet={sheetManagerRef.current.selectSheet}
-						renameSheet={sheetManagerRef.current.renameSheet}
-						deleteSheet={sheetManagerRef.current.deleteSheet}
-						selectedSheet={sheets.currentSheet} />
+						<SheetSelectDrawer onToggleDrawer={toggleSheetDrawer}
+							isDrawerOpen={state.isSheetsDrawerOpen}
+							sheetNames={[...Object.keys(sheets.sheets)]}
+							addSheet={sheetManagerRef.current.addSheet}
+							selectSheet={sheetManagerRef.current.selectSheet}
+							renameSheet={sheetManagerRef.current.renameSheet}
+							deleteSheet={sheetManagerRef.current.deleteSheet}
+							selectedSheet={sheets.currentSheet} />
 
-					<SettingsDrawer onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}
-						currentThemeName={themeState.themeName}
-						onSelectTheme={setTheme}
-						onSetDarkMode={setDarkMode}
-						isDarkMode={themeState.darkMode} />
-				</Box >
-			</TagContext.Provider>
+						<SettingsDrawer onToggleDrawer={toggleSettingsDrawer} isDrawerOpen={state.isSettingsDrawerOpen}
+							currentThemeName={themeState.themeName}
+							onSelectTheme={setTheme}
+							onSetDarkMode={setDarkMode}
+							isDarkMode={themeState.darkMode} />
+					</Box >
+				</TagContext.Provider>
+			</WindowSizeContext.Provider>
 		</ThemeProvider>
 	)
 

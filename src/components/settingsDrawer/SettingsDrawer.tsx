@@ -26,30 +26,32 @@ type settingsManagerProps = {
 
 const SettingsDrawer: FunctionComponent<settingsManagerProps> = (props) => {
     const darkMode = useTheme().palette.mode === "dark"
-    const themePreviews = themes.map(t => <Grid item xs={6} key={t.name}>
-        <ThemeProvider theme={createTheme(createOptions(t.options, darkMode))}>
-            <Button onClick={() => props.onSelectTheme(t.name)}
-                sx={{
-                    width: "100%", flexDirection: 'column',
-                    ...(t.name === props.currentThemeName ? { color: t.options.palette.primary.dark } : {}),
-                    backgroundColor: (t.name === props.currentThemeName) ? t.options.palette.primary.main + '50' : null
-                }}
-                disabled={t.name === props.currentThemeName}>
-                <ThemePreview />
-                {t.name}
-            </Button>
-        </ThemeProvider>
-    </Grid >)
+    const themePreviews = themes.map(t => (
+        <Grid item xs={6} key={t.name}>
+            <ThemeProvider theme={createTheme(createOptions(t.options, darkMode))}>
+                <Button onClick={() => props.onSelectTheme(t.name)}
+                    sx={{
+                        width: "100%", flexDirection: 'column',
+                        ...(t.name === props.currentThemeName ? { color: t.options.palette.primary.dark } : {}),
+                        backgroundColor: (t.name === props.currentThemeName) ? t.options.palette.primary.main + '50' : null
+                    }}
+                    disabled={t.name === props.currentThemeName}>
+                    <ThemePreview />
+                    {t.name}
+                </Button>
+            </ThemeProvider>
+        </Grid >)
+    )
 
     return (
         <Drawer
             anchor={"right"}
             open={props.isDrawerOpen}
-            onClose={event => props.onToggleDrawer(false)}
+            onClose={_ => props.onToggleDrawer(false)}
             id="settings-drawer"
             PaperProps={{
-                sx: { minWidth: "200px", maxWidth: "350px", width: "70%" },
-              }}
+                sx: { minWidth: "200px", maxWidth: "350px", width: "fit-content" },
+            }}
         >
             <TopBarSpacer />
             <Box id="settings-container">

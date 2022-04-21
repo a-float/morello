@@ -14,10 +14,10 @@ interface MultipleTagSelectProps {
 }
 
 export const MultipleTagSelect: FunctionComponent<MultipleTagSelectProps> = (props) => {
-  const {tags, tagManager } = useContext(TagContext)
+  const { tags, tagManager } = useContext(TagContext)
   const getTextColor = (id: number) => {
     const bgColor = tagManager.getColor(id)
-    return colord(bgColor).toHsl().l < 55 ? "#fafafa" : "#131313"
+    return colord(bgColor).toHsl().l < 40 ? "#fafafa" : "#070707"
   }
   return (
     <div>

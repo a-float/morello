@@ -10,7 +10,7 @@ type TagEditorState = {
     anchor: any
 }
 
-const TagEditor: FunctionComponent<{}> = (props) => {
+const TagEditor: FunctionComponent<{}> = () => {
     const [state, setState] = useState<TagEditorState>({ editedTag: null, anchor: null })
 
     const handleOpenPicker = (event: any, tag: Tag) => {
@@ -22,7 +22,8 @@ const TagEditor: FunctionComponent<{}> = (props) => {
         <>
             <Stack spacing={3}>
                 {tags.map(tag => (
-                    <TagEditItem key={tag.id}
+                    <TagEditItem
+                        key={tag.id}
                         tag={tag}
                         onOpenPicker={handleOpenPicker}
                         onChangeName={(x, y) => tagManager.renameTag(x, y)}

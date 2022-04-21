@@ -2,16 +2,20 @@
 
 const secondaryColor = {
     dark: {
-        main: "#171717"
+        light: "#262626",
+        main: "#171717",
+        dark: "#040404"
     },
     light: {
-        main: "#fafafa"
+        light: "#fefefe",
+        main: "#fafafa",
+        dark: "#bebebe"
     }
 }
 
 export const createOptions = (options: any, isDarkMode: boolean): any => {
     const mode = isDarkMode ? "dark" : "light"
-    const newOptions = {...options, palette: {...options.palette, mode, secondary: secondaryColor[mode]}}
+    const newOptions = { ...options, palette: { ...options.palette, mode, secondary: secondaryColor[mode] } }
     return newOptions
 }
 
@@ -142,7 +146,7 @@ const myThemes: { name: string, options: any }[] = [
                         dark: "#ed35da"
                     },
                     background: {
-                        default: "linear-gradient(to right, #ef32d9, #89fffd)"
+                        default: "linear-gradient(70deg, #ef32d9, #89fffd)"
                     }
 
                 }

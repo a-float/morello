@@ -220,7 +220,7 @@ const TaskDisplay: FunctionComponent<TaskDisplayProps> = (props) => {
                 taskData={state.editedTaskData}
                 onEndEdit={onEndTaskEdit} />
             <Fab variant="circular" aria-label="add column" onClick={() => addNewColumn()}
-                sx={{ backgroundColor: "secondary.main", position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
+                sx={{ "&:hover": { backgroundColor: "secondary.dark" }, backgroundColor: "secondary.main", position: "fixed", bottom: "20px", right: "20px", margin: "0px" }}>
                 <Add color="primary" />
             </Fab>
         </>

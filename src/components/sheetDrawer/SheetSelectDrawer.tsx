@@ -1,8 +1,9 @@
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import SheetList from './SheetList'
 import TopBarSpacer from '../TopBarSpacer'
+import { WindowSizeContext } from '../../App'
 
 const MAX_SHEET_COUNT = 100
 
@@ -19,15 +20,14 @@ interface SheetSelectDrawerProps {
 }
 
 const SheetSelectDrawer: FunctionComponent<SheetSelectDrawerProps> = (props) => {
-    
+    const isMobile = useContext(WindowSizeContext)
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Drawer
                 anchor={"left"}
-                variant={"persistent"}
+                variant={isMobile ? "temporary" : "persistent"}
                 open={props.isDrawerOpen}
-                onClose={event => props.onToggleDrawer(false)}
-                sx={{ backgroundColor: 'red' }}
+                onClose={_ => props.onToggleDrawer(false)}
             >
                 <TopBarSpacer />
                 <SheetList
