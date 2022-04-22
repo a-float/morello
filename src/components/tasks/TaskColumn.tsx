@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem"
 import IconButton from "@mui/material/IconButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import Menu from "@mui/material/Menu"
-import { Add, Edit, Delete, MoreHoriz } from "@mui/icons-material"
+import { Add, Delete, MoreHoriz } from "@mui/icons-material"
 import { grey } from "@mui/material/colors"
 import maxInputLength from '../../maxInputLengths'
 
@@ -15,6 +15,12 @@ export interface TaskColumnData {
     id: number,
     tasks: TaskData[]
 }
+
+export interface ColumnData {
+    name: string,
+    id: number
+}
+
 export type TaskColumnProps = {
     onAddNewTask: (colId: number) => void,
     onStartTaskEdit: (id: string) => void,
@@ -24,7 +30,7 @@ export type TaskColumnProps = {
 } & TaskColumnData
 
 export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
-    // TODO make column name edition similar to EditableListItem one!
+    // TODO make column name edition similar to EditableListItem one
     const [state, setState] = useState({ editable: false, name: props.name })
     const [menuAnchor, setMenuAnchor] = useState(null)
 
@@ -113,12 +119,12 @@ export const TaskColumn: FunctionComponent<TaskColumnProps> = (props) => {
                     horizontal: 'center',
                 }}
             >
-                <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); setState(prevState => ({ ...prevState, editable: true })); }}>
+                {/* <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); console.log("Heej"); setState(prevState => ({ ...prevState, editable: true })); }}>
                     <ListItemIcon>
                         <Edit />
                     </ListItemIcon>
                     Edit
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem dense={true} onClick={(event) => { setMenuAnchor(null); props.onDeleteColumn(props.id); }}>
                     <ListItemIcon>
                         <Delete />

@@ -7,6 +7,7 @@ import maxInputLength from '../../maxInputLengths'
 import EditableListItem from './EditableListItem'
 import { Close } from '@mui/icons-material';
 import { grey } from "@mui/material/colors"
+import { SHEET_WIDTH } from "./SheetSelectDrawer"
 
 
 type SheetListProps = {
@@ -37,7 +38,7 @@ const SheetList: FunctionComponent<SheetListProps> = (props) => {
         </ListItem>
     )
     return (
-        <List sx={{ backgroundColor: 'rgba(0,0,0,0)', width: '200px', height: '100vh', boxSizing: 'border-box', margin: 0, overflow: 'auto' }}>
+        <List sx={{ backgroundColor: 'rgba(0,0,0,0)', width: SHEET_WIDTH, height: '100vh', boxSizing: 'border-box', margin: 0, overflow: 'auto' }}>
             {sheetListItems}
             {sheetListItems.length < props.maxSheetCount &&
                 <ListItem disablePadding>

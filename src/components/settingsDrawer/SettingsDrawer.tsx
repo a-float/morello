@@ -50,7 +50,7 @@ const SettingsDrawer: FunctionComponent<settingsManagerProps> = (props) => {
             onClose={_ => props.onToggleDrawer(false)}
             id="settings-drawer"
             PaperProps={{
-                sx: { minWidth: "200px", maxWidth: "350px", width: "fit-content" },
+                sx: { minWidth: "200px", maxWidth: "80vw", width: "350px" },
             }}
         >
             <TopBarSpacer />

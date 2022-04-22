@@ -1,6 +1,6 @@
 import './App.css';
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react'
-import SheetSelectDrawer from './components/sheetDrawer/SheetSelectDrawer'
+import SheetSelectDrawer, { SHEET_WIDTH } from './components/sheetDrawer/SheetSelectDrawer'
 import SettingsDrawer from './components/settingsDrawer/SettingsDrawer'
 import Box from '@mui/material/Box'
 import { ThemeProvider } from '@mui/material/styles';
@@ -56,6 +56,7 @@ const App: FunctionComponent<{}> = () => {
 	// load all data from local storage on startup
 	useEffect(() => {
 		window.addEventListener("resize", handleResize)
+		handleResize()
 		const storage = window.localStorage
 		const version = storage.getItem(LS_VERSION_KEY)
 		if (!version || version !== CURRENT_VERSION) {
@@ -150,7 +151,7 @@ const App: FunctionComponent<{}> = () => {
 							tasks={currentSheetData.tasks}
 							columns={currentSheetData.columns}
 							onModifySheet={handleModifySheet}
-							widthOffsets={{ left: state.isSheetsDrawerOpen ? 200 : 0, right: 0 }} />
+							widthOffsets={{ left: state.isSheetsDrawerOpen ? SHEET_WIDTH : 0, right: 0 }} />
 
 						<SheetSelectDrawer onToggleDrawer={toggleSheetDrawer}
 							isDrawerOpen={state.isSheetsDrawerOpen}

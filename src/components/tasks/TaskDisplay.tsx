@@ -1,8 +1,8 @@
 import { FunctionComponent, useState, useRef, useEffect } from 'react'
-import { TaskColumn } from './TaskColumn'
+import { ColumnData, TaskColumn } from './TaskColumn'
 import { Stack } from '@mui/material'
 import { TaskData } from './Task'
-import { ColumnData, generateId } from "../../temps"
+import { generateId } from "../../utils"
 import { defaultTask } from './Task'
 import { TaskEditor } from '../taskEditor/TaskEditor'
 import { Add } from '@mui/icons-material'

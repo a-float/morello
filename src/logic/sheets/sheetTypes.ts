@@ -1,5 +1,5 @@
 import { TaskData } from "../../components/tasks/Task"
-import { ColumnData } from "../../temps"
+import { ColumnData } from "../../components/tasks/TaskColumn"
 import { SheetState } from "./useSheets"
 
 export interface SheetData {

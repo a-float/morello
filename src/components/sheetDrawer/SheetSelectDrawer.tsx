@@ -7,6 +7,7 @@ import { WindowSizeContext } from '../../App'
 import { SheetAction, SheetActionType } from '../../logic/sheets/sheetTypes'
 
 const MAX_SHEET_COUNT = 100
+export const SHEET_WIDTH = 230 // TODO bag constant global width
 
 interface SheetSelectDrawerProps {
     sheetNames: string[]
